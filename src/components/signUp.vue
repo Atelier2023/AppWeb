@@ -65,7 +65,7 @@ export default {
                 return
             }
 
-            axios.post("http://localhost:19101/users", {
+            axios.post("http://localhost:19102/users/create", {
                 firstname: this.nickname,
                 email: this.email,
                 password: this.password,
