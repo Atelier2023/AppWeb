@@ -73,7 +73,7 @@ export default {
             }).then(
                 (response) => {
                     if (response.status === 201) {
-                        alert('normalement c ajouter')
+                        this.$router.push('/signin')
                     }
                     console.log(response);
                 },
