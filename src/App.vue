@@ -3,9 +3,10 @@
 <template>
   <nav>
     <router-link to="/">Page d'accueil</router-link>
-    <router-link to="/signin">connexion</router-link>
-    <router-link to="/signup">inscription</router-link>
-
+    <router-link v-if="!this.$store.state.authenticated" to="/signin">connexion</router-link>
+    <router-link v-if="!this.$store.state.authenticated" to="/signup">inscription</router-link>
+    <router-link v-if="this.$store.state.authenticated" class="nav-link" to="/">Créer un
+      évenement</router-link>
 
 
   </nav>
