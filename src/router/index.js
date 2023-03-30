@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import signupRouter from '@/components/signUp.vue'
 import signinRouter from '@/components/signIn.vue'
+import logoutRouter from '@/components/logOut.vue'
+import createEventRouter from '@/components/createEvent.vue'
 
 
 const router = createRouter({
@@ -17,6 +19,17 @@ const router = createRouter({
       name: 'signin',
       component: signinRouter
     },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: logoutRouter
+    },
+    {
+      path: '/createEvent',
+      name: 'createEvent',
+      component: createEventRouter
+    },
+
   ]
 })
 
