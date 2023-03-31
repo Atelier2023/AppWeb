@@ -1,4 +1,7 @@
 <template>
+    <router-link to="/homePage">Page d'accueil</router-link>
+    <h1>Page de connexion</h1>
+
     <form @submit.prevent="submitForm">
         <label>
             Email:
@@ -32,6 +35,16 @@ export default {
     },
     methods: {
         submitForm() {
+
+
+            this.emailError = this.validateEmail(this.email)
+            this.passwordError = this.validatePassword(this.password)
+
+            // Vérifications de sécurité
+            if (this.emailError || this.passwordError) {
+                return
+            }
+
             axios.post("http://localhost:19102/users/signin", {
 
             }, {
@@ -47,8 +60,8 @@ export default {
                         this.$store.state.email = response.data.email;
                         this.$store.state.username = response.data.user;
                         this.$store.state.tel_number = response.data.tel;
-                        this.$store.state.token = response.data.accestoken;
-                        this.$router.push('/')
+                        this.$store.state.token = response.data.accesstoken;
+                        this.$router.push('/homePage')
 
                     }
                     console.log(response);

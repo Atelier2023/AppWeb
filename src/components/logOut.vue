@@ -12,7 +12,7 @@ export default {
 
     mounted: function () {
         this.$store.commit('logout')
-        this.$router.push('/')
+        this.$router.push('/homePage')
     },
 
 }
