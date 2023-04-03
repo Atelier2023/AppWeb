@@ -78,12 +78,10 @@ export default {
                                     }
                                 })
                                     .then(response => {
-                                        console.log(response)
                                         this.$store.state.token = response.data.accesstoken;
                                         this.$router.push('/createEvent')
                                     })
                                     .catch(error => {
-                                        console.log(error)
                                     });
                             });
                     }
@@ -94,15 +92,12 @@ export default {
         getEvents() {
             axios.get(`http://localhost:19100/events/getEvent/${this.$store.state.id}`)
                 .then(response => {
-                    console.log(response)
                     this.events = response.data;
-                    //console.log(this.events)
 
                     this.events.forEach(event => {
                         axios.get(`http://localhost:19102/users/getUser/${event.id_user}`)
                             .then(response => {
                                 event.username = response.data;
-                                console.log(this.events)
                             })
                             .catch(error => {
                                 console.log(error);
@@ -137,7 +132,6 @@ export default {
                                     }
                                 })
                                     .then(response => {
-                                        console.log(response)
                                         this.$store.state.token = response.data.accesstoken;
                                         this.$router.push(`/oneEvent/${id}`)
                                     })
