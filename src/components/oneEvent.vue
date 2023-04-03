@@ -1,27 +1,29 @@
 <template>
     <nav>
         <router-link to="/homePage">Page d'accueil</router-link>
-        <h1></h1>
-        <router-link v-if="!this.$store.state.authenticated" to="/signin">connexion</router-link>
-        <router-link v-if="!this.$store.state.authenticated" to="/signup">inscription</router-link>
         <button v-if="this.$store.state.authenticated" @click="createEvent">Créer un évenement</button>
         <router-link v-if="this.$store.state.authenticated" class="nav-link" to="/logout">Déconnexion</router-link>
     </nav>
+    <p>{{ events }}</p>
 
-    <div v-if="events != ''">
+    <h1>Détails de l'événement : </h1>
+    <h3>Date : {{ events.date_event }}</h3>
+    <h3>Adresse : {{ events.address }}</h3>
 
-        <div v-for="(event, index) in events" :key="event.id">{{ event }} >
-            <H1>{{ event.title }}</H1>
-            {{ index }}
-            <p> Date de l'évenement : <b>{{ event.date_event }}</b></p>
-            <p>Adresse de l'évenement : <b>{{ event.address }}</b></p>
-            <p>Statut : {{ event.state }}</p>
-            <p>Createur de l'evenement : {{ event.username[0].firstname }}</p>
-            <button @click="goToOneEvent(event.id_event)">Détails de l'événement {{ event.title }}</button>
-        </div>
+    <h1>Listes des participants :</h1>
+
+    <h1>Commentaires de l'évenement :</h1>
+
+    <div v-for="(commentaire, index) in coms" :key="commentaire.id">{{ commentaire }} >
+        <p>{{ commentaire.commentaires }}</p>
     </div>
-
-
+    <form @submit.prevent="addCom">
+        <div>
+            <label for="com">Commentaires:</label><br>
+            <textarea name="com" id="com" v-model="com" cols="50" rows="5" required></textarea>
+        </div>
+        <button type="submit">Ajouter un commentaires</button>
+    </form>
 
     <router-view></router-view>
 </template>
@@ -36,6 +38,8 @@ export default {
         return {
             events: '',
             user: '',
+            com: '',
+            coms: ''
         }
     },
     methods: {
@@ -76,37 +80,64 @@ export default {
             );
         },
         getEvents() {
-            axios.get(`http://localhost:19100/events/getEvent/${this.$store.state.id}`)
+            axios.get(`http://localhost:19100/events/${this.$route.params.id}`)
                 .then(response => {
                     console.log(response)
                     this.events = response.data;
-                    //console.log(this.events)
+                    console.log(this.events)
 
-                    this.events.forEach(event => {
-                        axios.get(`http://localhost:19102/users/getUser/${event.id_user}`)
-                            .then(response => {
-                                event.username = response.data;
-                                console.log(this.events)
-                            })
-                            .catch(error => {
-                                console.log(error);
-                            });
-                    });
+                    axios.get(`http://localhost:19102/users/getUser/${this.events.id_user}`)
+                        .then(response => {
+                            this.events.username = response.data;
+                            console.log(this.events)
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
 
                 })
                 .catch(error => {
                     console.log(error);
                 });
         },
-        goToOneEvent(id) {
+        getComs() {
+            axios.get(`http://localhost:19100/commentaires/${this.$route.params.id}`)
+                .then(response => {
+                    console.log(response)
+                    this.coms = response.data;
+                    console.log(this.coms)
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        addCom() {
             axios.get('http://localhost:19102/users/validate', {
                 headers: {
                     Authorization: `Bearer ${this.$store.state.token}`
                 }
             }).then(
                 (response) => {
+                    console.log(response)
                     if (response.status === 200) {
-                        this.$router.push(`/oneEvent/${id}`)
+                        const current = new Date();
+                        const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
+                        axios.post("http://localhost:19100/commentaires/create", {
+                            commentaire: this.com,
+                            id_user: this.$store.state.id,
+                            id_event: this.$route.params.id,
+                            date: date
+                        }).then(
+                            (response) => {
+                                if (response.status === 201) {
+                                    this.$router.push(`/oneEvent/${this.$route.params.id}`)
+                                }
+                                console.log(response);
+                            },
+                            (error) => {
+                                console.log(error);
+                            }
+                        );
                     }
                 },
                 (error) => {
@@ -123,7 +154,25 @@ export default {
                                     .then(response => {
                                         console.log(response)
                                         this.$store.state.token = response.data.accesstoken;
-                                        this.$router.push(`/oneEvent/${id}`)
+                                        const current = new Date();
+                                        const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
+                                        axios.post("http://localhost:19100/commentaires/create", {
+                                            commentaire: this.com,
+                                            id_user: this.$store.state.id,
+                                            id_event: this.$route.params.id,
+                                            date: date
+                                        }).then(
+                                            (response) => {
+                                                if (response.status === 201) {
+                                                    this.$router.push(`/oneEvent/${this.$route.params.id}`)
+                                                }
+                                                console.log(response);
+                                            },
+                                            (error) => {
+                                                console.log(error);
+                                                this.error = true;
+                                            }
+                                        );
                                     })
                                     .catch(error => {
                                         console.log(error)
@@ -138,6 +187,7 @@ export default {
     },
     mounted() {
         this.getEvents()
+        this.getComs()
     },
     computed: {
 
