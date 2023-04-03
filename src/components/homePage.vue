@@ -10,14 +10,30 @@
 
     <div v-if="events != ''">
 
-        <div v-for="(event, index) in events" :key="event.id">{{ event }} >
-            <H1>{{ event.title }}</H1>
-            {{ index }}
-            <p> Date de l'évenement : <b>{{ event.date_event }}</b></p>
-            <p>Adresse de l'évenement : <b>{{ event.address }}</b></p>
-            <p>Statut : {{ event.state }}</p>
-            <p>Createur de l'evenement : {{ event.username[0].firstname }}</p>
-            <button @click="goToOneEvent(event.id_event)">Détails de l'événement {{ event.title }}</button>
+        <div v-for="(event, index) in events" :key="event.id">
+            <table style="border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid black; padding: 5px;">Titre de l'événement</th>
+                        <th style="border: 1px solid black; padding: 5px;">Date de l'événement</th>
+                        <th style="border: 1px solid black; padding: 5px;">Adresse de l'événement</th>
+                        <th style="border: 1px solid black; padding: 5px;">Statut</th>
+                        <th style="border: 1px solid black; padding: 5px;">Créateur de l'événement</th>
+                        <th style="border: 1px solid black; padding: 5px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.title }}</td>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.date_event }}</td>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.address }}</td>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.state }}</td>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.username[0].firstname }}</td>
+                        <td style="border: 1px solid black; padding: 5px;"><button style="padding: 5px;"
+                                @click="goToOneEvent(event.id_event)">Détails</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -62,12 +78,10 @@ export default {
                                     }
                                 })
                                     .then(response => {
-                                        console.log(response)
                                         this.$store.state.token = response.data.accesstoken;
                                         this.$router.push('/createEvent')
                                     })
                                     .catch(error => {
-                                        console.log(error)
                                     });
                             });
                     }
@@ -78,15 +92,12 @@ export default {
         getEvents() {
             axios.get(`http://localhost:19100/events/getEvent/${this.$store.state.id}`)
                 .then(response => {
-                    console.log(response)
                     this.events = response.data;
-                    //console.log(this.events)
 
                     this.events.forEach(event => {
                         axios.get(`http://localhost:19102/users/getUser/${event.id_user}`)
                             .then(response => {
                                 event.username = response.data;
-                                console.log(this.events)
                             })
                             .catch(error => {
                                 console.log(error);
@@ -121,7 +132,6 @@ export default {
                                     }
                                 })
                                     .then(response => {
-                                        console.log(response)
                                         this.$store.state.token = response.data.accesstoken;
                                         this.$router.push(`/oneEvent/${id}`)
                                     })

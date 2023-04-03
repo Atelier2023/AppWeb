@@ -4,9 +4,8 @@
         <button v-if="this.$store.state.authenticated" @click="createEvent">Créer un évenement</button>
         <router-link v-if="this.$store.state.authenticated" class="nav-link" to="/logout">Déconnexion</router-link>
     </nav>
-    <p>{{ events }}</p>
 
-    <h1>Détails de l'événement : </h1>
+    <h1>Détails de l'événement : {{ events.title }}</h1>
     <h3>Date : {{ events.date_event }}</h3>
     <h3>Adresse : {{ events.address }}</h3>
     <h3>Shared: {{ events.shared_url }}</h3>
@@ -19,8 +18,24 @@
     <button @click="goToSharedURL(events.shared_url)">Shared URL</button>
     <h1>Commentaires de l'évenement :</h1>
 
-    <div v-for="(commentaire, index) in coms" :key="commentaire.id">{{ commentaire }} >
-        <p>{{ commentaire.commentaires }}</p>
+    <div v-for="(commentaire, index) in coms" :key="commentaire.id">
+        <table>
+            <thead>
+                <tr>
+                    <th>Pseudo</th>
+                    <th>Commentaire</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ commentaire.username[0].firstname }}</td>
+                    <td>{{ commentaire.commentaire }}</td>
+                    <td>{{ commentaire.date }}</td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
     <form @submit.prevent="addCom">
         <div>
@@ -46,6 +61,7 @@ export default {
             com: '',
             coms: '',
             participants: '',
+            username: '',
         }
     },
     methods: {
@@ -92,26 +108,30 @@ export default {
                     this.events = response.data;
                     console.log(this.events)
 
-                    axios.get(`http://localhost:19102/users/getUser/${this.events.id_user}`)
-                        .then(response => {
-                            this.events.username = response.data;
-                            console.log(this.events)
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
 
                 })
                 .catch(error => {
                     console.log(error);
                 });
         },
+
         getComs() {
             axios.get(`http://localhost:19100/commentaires/${this.$route.params.id}`)
                 .then(response => {
                     console.log(response)
-                    this.coms = response.data;
+                    this.coms = response.data.comments;
                     console.log(this.coms)
+
+                    this.coms.forEach(com => {
+                        axios.get(`http://localhost:19102/users/getUser/${com.id_user}`)
+                            .then(response => {
+                                com.username = response.data;
+                                console.log(this.coms)
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    });
                 })
                 .catch(error => {
                     console.log(error);
@@ -136,6 +156,7 @@ export default {
                         }).then(
                             (response) => {
                                 if (response.status === 201) {
+                                    this.getComs()
                                     this.$router.push(`/oneEvent/${this.$route.params.id}`)
                                 }
                                 console.log(response);
@@ -170,6 +191,7 @@ export default {
                                         }).then(
                                             (response) => {
                                                 if (response.status === 201) {
+                                                    this.getComs()
                                                     this.$router.push(`/oneEvent/${this.$route.params.id}`)
                                                 }
                                                 console.log(response);
@@ -240,6 +262,24 @@ nav a {
 
 nav a:hover {
     color: lightgrey;
+}
+
+table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+th,
+td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
 }
 </style>
 
