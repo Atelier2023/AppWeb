@@ -36,7 +36,8 @@ export default {
             titleError: '',
             adressError: '',
             dateError: '',
-            error: ''
+            error: '',
+            shared_url: 'test',
         }
     },
     methods: {
@@ -55,6 +56,7 @@ export default {
                 title: this.title,
                 address: this.adress,
                 date_event: this.date,
+                shared_url: this.shared_url
             }).then(
                 (response) => {
                     if (response.status === 201) {
