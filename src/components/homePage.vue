@@ -10,8 +10,14 @@
 
     <div v-if="events != ''">
 
-        <div v-for="event in events" :key="event.id">{{ event }}>
-            <p></p>
+        <div v-for="(event, index) in events" :key="event.id">{{ event }} >
+            <H1>{{ event.title }}</H1>
+            {{ index }}
+            <p> Date de l'évenement : <b>{{ event.date_event }}</b></p>
+            <p>Adresse de l'évenement : <b>{{ event.address }}</b></p>
+            <p>Statut : {{ event.state }}</p>
+            <p>Createur de l'evenement : {{ event.username[0].firstname }}</p>
+            <button @click="goToOneEvent">Détails de l'événement {{ event.title }}</button>
         </div>
     </div>
 
@@ -29,6 +35,7 @@ export default {
     data() {
         return {
             events: '',
+            user: '',
         }
     },
     methods: {
@@ -73,13 +80,61 @@ export default {
                 .then(response => {
                     console.log(response)
                     this.events = response.data;
-                    console.log(this.events)
+                    //console.log(this.events)
+
+                    this.events.forEach(event => {
+                        axios.get(`http://localhost:19102/users/getUser/${event.id_user}`)
+                            .then(response => {
+                                event.username = response.data;
+                                console.log(this.events)
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    });
+
                 })
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        goToOneEvent() {
+            axios.get('http://localhost:19102/users/validate', {
+                headers: {
+                    Authorization: `Bearer ${this.$store.state.token}`
+                }
+            }).then(
+                (response) => {
+                    if (response.status === 200) {
+                        this.$router.push('/OneEvent')
+                    }
+                },
+                (error) => {
+                    if (error.response.status === 401) {
+                        axios.get(`http://localhost:19102/users/getRefresh/${this.$store.state.id}`, {
+                        }).then(
+                            (response) => {
+                                const refresh_token = response.data[0].refresh_token;
+                                axios.post('http://localhost:19102/users/refresh', {}, {
+                                    headers: {
+                                        Authorization: `Bearer ${refresh_token}`
+                                    }
+                                })
+                                    .then(response => {
+                                        console.log(response)
+                                        this.$store.state.token = response.data.accesstoken;
+                                        this.$router.push('/OneEvent')
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    });
+                            });
+                    }
+                    this.error = "Une erreur est survenue lors de la connexion";
+                }
+            );
+        },
 
-        }
     },
     mounted() {
         this.getEvents()
@@ -116,3 +171,5 @@ nav a:hover {
     color: lightgrey;
 }
 </style>
+
+

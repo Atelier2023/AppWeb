@@ -1,4 +1,6 @@
 <template>
+    <router-link to="/homePage">Page d'accueil</router-link>
+
     <form @submit.prevent="submitForm">
         <label>
             Titre:
@@ -41,10 +43,10 @@ export default {
         submitForm() {
             this.dateError = this.validatedate(this.date)
             this.titleError = this.validatetitle(this.title)
-            this.addressError = this.validateAddress(this.address)
+            this.addressError = this.validateadress(this.address)
 
             // Vérifications de sécurité
-            if (this.dateError || this.titleError || this.addressError) {
+            if (this.dateError || this.titleError || this.adressError) {
                 return
             }
 
@@ -56,7 +58,7 @@ export default {
             }).then(
                 (response) => {
                     if (response.status === 201) {
-                        this.$router.push('/')
+                        this.$router.push('/homePage')
 
                     }
                     console.log(response);
