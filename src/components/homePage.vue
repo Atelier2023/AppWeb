@@ -10,14 +10,30 @@
 
     <div v-if="events != ''">
 
-        <div v-for="(event, index) in events" :key="event.id">{{ event }} >
-            <H1>{{ event.title }}</H1>
-            {{ index }}
-            <p> Date de l'évenement : <b>{{ event.date_event }}</b></p>
-            <p>Adresse de l'évenement : <b>{{ event.address }}</b></p>
-            <p>Statut : {{ event.state }}</p>
-            <p>Createur de l'evenement : {{ event.username[0].firstname }}</p>
-            <button @click="goToOneEvent(event.id_event)">Détails de l'événement {{ event.title }}</button>
+        <div v-for="(event, index) in events" :key="event.id">
+            <table style="border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid black; padding: 5px;">Titre de l'événement</th>
+                        <th style="border: 1px solid black; padding: 5px;">Date de l'événement</th>
+                        <th style="border: 1px solid black; padding: 5px;">Adresse de l'événement</th>
+                        <th style="border: 1px solid black; padding: 5px;">Statut</th>
+                        <th style="border: 1px solid black; padding: 5px;">Créateur de l'événement</th>
+                        <th style="border: 1px solid black; padding: 5px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.title }}</td>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.date_event }}</td>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.address }}</td>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.state }}</td>
+                        <td style="border: 1px solid black; padding: 5px;">{{ event.username[0].firstname }}</td>
+                        <td style="border: 1px solid black; padding: 5px;"><button style="padding: 5px;"
+                                @click="goToOneEvent(event.id_event)">Détails</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 

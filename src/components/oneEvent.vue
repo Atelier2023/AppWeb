@@ -4,7 +4,6 @@
         <button v-if="this.$store.state.authenticated" @click="createEvent">Créer un évenement</button>
         <router-link v-if="this.$store.state.authenticated" class="nav-link" to="/logout">Déconnexion</router-link>
     </nav>
-    <p>{{ events }}</p>
 
     <h1>Détails de l'événement : {{ events.title }}</h1>
     <h3>Date : {{ events.date_event }}</h3>
@@ -18,14 +17,14 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID utilisateur</th>
+                    <th>Pseudo</th>
                     <th>Commentaire</th>
                     <th>Date</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ commentaire.id_user }}</td>
+                    <td>{{ commentaire.username[0].firstname }}</td>
                     <td>{{ commentaire.commentaire }}</td>
                     <td>{{ commentaire.date }}</td>
                 </tr>
@@ -116,6 +115,17 @@ export default {
                     console.log(response)
                     this.coms = response.data.comments;
                     console.log(this.coms)
+
+                    this.coms.forEach(com => {
+                        axios.get(`http://localhost:19102/users/getUser/${com.id_user}`)
+                            .then(response => {
+                                com.username = response.data;
+                                console.log(this.coms)
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    });
                 })
                 .catch(error => {
                     console.log(error);
