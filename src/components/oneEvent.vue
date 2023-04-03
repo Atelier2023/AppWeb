@@ -9,9 +9,14 @@
     <h1>Détails de l'événement : </h1>
     <h3>Date : {{ events.date_event }}</h3>
     <h3>Adresse : {{ events.address }}</h3>
+    <h3>Shared: {{ events.shared_url }}</h3>
 
     <h1>Listes des participants :</h1>
-
+    <div v-for="(participant, index) in participants" :key="participant.id">{{ participant }} >
+    </div>
+    <h2>Lien de partage :</h2>
+    <p>http://localhost:5173/shared/{{ events.shared_url }}</p>
+    <button @click="goToSharedURL(events.shared_url)">Shared URL</button>
     <h1>Commentaires de l'évenement :</h1>
 
     <div v-for="(commentaire, index) in coms" :key="commentaire.id">{{ commentaire }} >
@@ -39,7 +44,8 @@ export default {
             events: '',
             user: '',
             com: '',
-            coms: ''
+            coms: '',
+            participants: '',
         }
     },
     methods: {
@@ -183,11 +189,26 @@ export default {
                 }
             );
         },
+        getParticipants() {
+            axios.get(`http://localhost:19100/participants/getParticipants/${this.$route.params.id}`)
+                .then(response => {
+                    console.log(response)
+                    this.participants = response.data;
+                    console.log(this.participants)
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        goToSharedURL(id) {
+            this.$router.push(`/shared/${id}`)
+        },
 
     },
     mounted() {
         this.getEvents()
         this.getComs()
+        this.getParticipants()
     },
     computed: {
 

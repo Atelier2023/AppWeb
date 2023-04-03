@@ -2,10 +2,9 @@
 
 <template>
   <nav>
-
+    <router-link to="/homePage">Page d'accueil</router-link>
   </nav>
-
-
+  
 
 
   <router-view></router-view>
@@ -25,7 +24,7 @@ export default {
 
   },
   mounted() {
-    this.$router.push('/homePage')
+    //this.$router.push('/homePage')
   },
   computed: {
 
