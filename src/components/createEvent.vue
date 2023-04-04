@@ -29,9 +29,7 @@
                 <p v-if="error">{{ error }}</p>
             </form>
         </div>
-        <div class="mapLeaflet">
-            <mapLeaflet/>
-        </div>
+
     </div>
 </template>
 <script>

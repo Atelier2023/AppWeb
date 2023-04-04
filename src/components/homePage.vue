@@ -34,9 +34,7 @@
                 </table>
             </div>
         </div>
-        <div class="mapLeaflet">
-            <mapLeaflet/>
-        </div>
+
     </div>
 
     <router-view></router-view>

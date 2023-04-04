@@ -6,7 +6,6 @@ import createEventRouter from '@/components/createEvent.vue'
 import homePageRouter from '@/components/homePage.vue'
 import oneEventRouter from '@/components/oneEvent.vue'
 import sharedEventRouter from '@/components/sharedEvent.vue'
-import mapLeafletRouter from '@/components/mapLeaflet.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,13 +46,6 @@ const router = createRouter({
       name: 'sharedEvent',
       component: sharedEventRouter
     },
-    {
-      path: '/mapLeaflet',
-      name: 'mapLeaflet',
-      component: mapLeafletRouter
-    }
-
-
   ]
 })
 
