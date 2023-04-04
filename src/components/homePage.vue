@@ -2,6 +2,7 @@
     <nav class="nav-event">
         <router-link to="/homePage" class="onPage">Mes événements</router-link>
         <button v-if="this.$store.state.authenticated" @click="createEvent" class="createEventButton">Créer un évenement</button>
+        
     </nav>
 
     <div class="container-homepage">
