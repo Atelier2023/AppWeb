@@ -11,7 +11,7 @@
     <h3>Shared: {{ events.shared_url }}</h3>
 
     <h1>Listes des participants :</h1>
-    <div v-for="(participant, index) in participants" :key="participant.id">{{ participant.participants.name }}
+    <div v-for="(participant, index) in participants" :key="participant.id">
         <table>
             <thead>
                 <tr>
@@ -24,8 +24,9 @@
             <tbody>
                 <tr>
                     <td>{{ participant.participants.name }}</td>
-                    <td>{{ participant.participants.commentaire }}</td>
-                    <td>{{ participant.participants.date.substring(0, 10) }}</td>
+                    <td>{{ participant.participants.firstname }}</td>
+                    <td>{{ participant.participants.tel_number }}</td>
+                    <td>{{ participant.participants.state }}</td>
                 </tr>
             </tbody>
         </table>
