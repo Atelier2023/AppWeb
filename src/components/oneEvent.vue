@@ -11,10 +11,27 @@
     <h3>Shared: {{ events.shared_url }}</h3>
 
     <h1>Listes des participants :</h1>
-    <div v-for="(participant, index) in participants" :key="participant.id">{{ participant }} >
+    <div v-for="(participant, index) in participants" :key="participant.id">{{ participant.participants.name }}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prenom</th>
+                    <th>num</th>
+                    <th>status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ participant.participants.name }}</td>
+                    <td>{{ participant.participants.commentaire }}</td>
+                    <td>{{ participant.participants.date.substring(0, 10) }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <h2>Lien de partage :</h2>
-    <a :href="'http://localhost:5173/shared/' +events.shared_url">http://localhost:5173/shared/{{ events.shared_url }}</a>
+    <a :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{ events.shared_url }}</a>
     <h1>Commentaires de l'évenement :</h1>
 
     <div v-for="(commentaire, index) in coms" :key="commentaire.id">
@@ -30,7 +47,7 @@
                 <tr>
                     <td>{{ commentaire.username[0].firstname }}</td>
                     <td>{{ commentaire.commentaire }}</td>
-                    <td>{{ commentaire.date.substring(0,10) }}</td>
+                    <td>{{ commentaire.date.substring(0, 10) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -117,10 +134,7 @@ export default {
         getComs() {
             axios.get(`http://localhost:19100/commentaires/${this.$route.params.id}`)
                 .then(response => {
-                    console.log(response)
                     this.coms = response.data.comments;
-                    console.log(this.coms)
-
                     this.coms.forEach(com => {
                         axios.get(`http://localhost:19102/users/getUser/${com.id_user}`)
                             .then(response => {
@@ -214,7 +228,7 @@ export default {
             axios.get(`http://localhost:19100/participants/getParticipants/${this.$route.params.id}`)
                 .then(response => {
                     console.log(response)
-                    this.participants = response.data;
+                    this.participants = response.data.participants;
                     console.log(this.participants)
                 })
                 .catch(error => {
@@ -240,7 +254,6 @@ export default {
 </script>
 
 <style>
-
 table {
     border-collapse: collapse;
     width: 80%;
