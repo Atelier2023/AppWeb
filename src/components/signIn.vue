@@ -90,29 +90,39 @@ export default {
 }
 </script>
   
-<style>
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 30px;
+<style scoped>
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
 }
 
-nav {
-    display: flex;
-    justify-content: center;
+input {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    width: 25%;
+    font-size: 1rem;
 }
 
-nav a {
-    font-size: 1.2rem;
-    padding: 1rem;
-    text-decoration: none;
-    color: #2c3e50;
+.error-message {
+    color: red;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
 }
 
-nav a:hover {
-    color: lightgrey;
+button[type="submit"] {
+    background-color: #008000;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #006400;
 }
 </style>
