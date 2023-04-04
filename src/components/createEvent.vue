@@ -29,17 +29,17 @@
                 <p v-if="error">{{ error }}</p>
             </form>
         </div>
-
+        <div style="height:600px; width:800px" class="mapLeaflet">
+            <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
+            <l-tile-layer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                layer-type="base"
+                name="OpenStreetMap"
+            ></l-tile-layer>
+            </l-map>
+        </div>
     </div>
-    <div style="height:600px; width:800px">
-    <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
-      <l-tile-layer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        layer-type="base"
-        name="OpenStreetMap"
-      ></l-tile-layer>
-    </l-map>
-  </div>
+
 </template>
 <script>
 import axios from "axios";
