@@ -4,6 +4,7 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import { createStore } from 'vuex'
+import 'leaflet/dist/leaflet.css';
 
 
 
