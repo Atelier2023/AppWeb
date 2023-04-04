@@ -1,8 +1,7 @@
 <template>
     <nav class="nav-event">
         <router-link to="/homePage">Mes événements</router-link>
-        <router-link to="/createEvent"  class="onPage">Créer un événement</router-link>
-        <!-- <button v-if="this.$store.state.authenticated" @click="createEvent" class="">Créer un évenement</button> -->
+        <button v-if="this.$store.state.authenticated" @click="createEvent"  class="onPage createEventButton">Créer un évenement</button>
     </nav>
 
     <div class="container-createpage">
