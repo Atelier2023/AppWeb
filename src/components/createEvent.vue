@@ -63,7 +63,7 @@ export default {
             adressError: '',
             dateError: '',
             error: '',
-            zoom:2,
+            zoom:13,
 
         }
     },
