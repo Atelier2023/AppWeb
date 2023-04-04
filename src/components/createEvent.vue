@@ -1,6 +1,4 @@
 <template>
-    <router-link to="/homePage">Page d'accueil</router-link>
-
     <form @submit.prevent="submitForm">
         <label>
             Titre:
@@ -22,12 +20,14 @@
         <button type="submit">Enregistrer</button>
         <p v-if="error">{{ error }}</p>
     </form>
+    <Map></Map>
 </template>
 <script>
 import axios from "axios";
 
 export default {
     name: 'signin',
+
     data() {
         return {
             title: '',
@@ -37,6 +37,7 @@ export default {
             adressError: '',
             dateError: '',
             error: '',
+
         }
     },
     methods: {
@@ -69,6 +70,7 @@ export default {
                 }
             );
         },
+
         validatetitle(title) {
             if (!title) {
                 return 'Veuillez entrer une titre.'
@@ -87,6 +89,9 @@ export default {
             }
             return ''
         },
+
+    },
+    mounted() {
     }
 }
 </script>

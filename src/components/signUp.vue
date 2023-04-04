@@ -1,6 +1,4 @@
 <template>
-    <router-link to="/homePage">Page d'accueil</router-link>
-
     <div>
         <h1>Page d'inscription</h1>
         <form @submit.prevent="submitForm">

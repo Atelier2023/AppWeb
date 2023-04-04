@@ -1,6 +1,5 @@
 <template>
     <nav>
-        <router-link to="/homePage">Page d'accueil</router-link>
         <h1></h1>
         <router-link v-if="!this.$store.state.authenticated" to="/signin">connexion</router-link>
         <router-link v-if="!this.$store.state.authenticated" to="/signup">inscription</router-link>
