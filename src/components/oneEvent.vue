@@ -62,15 +62,31 @@
         <button type="submit">Ajouter un commentaires</button>
     </form>
 
+    <div style="height:600px; width:800px" class="mapLeaflet">
+        <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
+        <l-tile-layer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            layer-type="base"
+            name="OpenStreetMap"
+        ></l-tile-layer>
+        </l-map>
+    </div>
+
     <router-view></router-view>
 </template>
 
 <script>
 import axios from "axios";
+import "leaflet/dist/leaflet.css";
+import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
+
 
 export default {
     name: 'homePage',
-    components: {},
+    components: {
+        LMap,
+        LTileLayer,
+    },
     data() {
         return {
             events: '',
@@ -79,6 +95,7 @@ export default {
             coms: '',
             participants: '',
             username: '',
+            zoom: 13,
         }
     },
     methods: {
