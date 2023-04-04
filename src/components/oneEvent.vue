@@ -1,38 +1,53 @@
 <template>
-    <nav>
-        <router-link to="/homePage">Page d'accueil</router-link>
-        <button v-if="this.$store.state.authenticated" @click="createEvent">Créer un évenement</button>
-        <router-link v-if="this.$store.state.authenticated" class="nav-link" to="/logout">Déconnexion</router-link>
+    <nav class="nav-event">
+        <router-link to="/homePage">Mes événements</router-link>
+        <button v-if="this.$store.state.authenticated" @click="createEvent"  class="onPage createEventButton">Créer un évenement</button>
     </nav>
 
-    <h1>Détails de l'événement : {{ events.title }}</h1>
-    <h3>Date : {{ events.date_event }}</h3>
-    <h3>Adresse : {{ events.address }}</h3>
-    <h3>Shared: {{ events.shared_url }}</h3>
+    <div class="container-onevent">
 
-    <h1>Listes des participants :</h1>
-    <div v-for="(participant, index) in participants" :key="participant.id">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Prenom</th>
-                    <th>num</th>
-                    <th>status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ participant.participants.name }}</td>
-                    <td>{{ participant.participants.firstname }}</td>
-                    <td>{{ participant.participants.tel_number }}</td>
-                    <td>{{ participant.participants.state }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="left-container">
+            <h1>Détails de l'événement : {{ events.title }}</h1>
+            <h3>Date : {{ events.date_event }}</h3>
+            <h3>Adresse : {{ events.address }}</h3>
+            <h3>Shared: {{ events.shared_url }}</h3>
+
+            <h1>Listes des participants :</h1>
+            <div v-for="(participant, index) in participants" :key="participant.id">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>num</th>
+                            <th>status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ participant.participants.name }}</td>
+                            <td>{{ participant.participants.firstname }}</td>
+                            <td>{{ participant.participants.tel_number }}</td>
+                            <td>{{ participant.participants.state }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h2>Lien de partage :</h2>
+            <a :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{ events.shared_url }}</a>
+        </div>
+        <div style="height:600px; width:800px" class="mapLeaflet">
+            <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
+            <l-tile-layer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                layer-type="base"
+                name="OpenStreetMap"
+            ></l-tile-layer>
+            </l-map>
+        </div>   
     </div>
-    <h2>Lien de partage :</h2>
-    <a :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{ events.shared_url }}</a>
+
+    <div class="commentaires">
     <h1>Commentaires de l'évenement :</h1>
 
     <div v-for="(commentaire, index) in coms" :key="commentaire.id">
@@ -61,16 +76,8 @@
         </div>
         <button type="submit">Ajouter un commentaires</button>
     </form>
-
-    <div style="height:600px; width:800px" class="mapLeaflet">
-        <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
-        <l-tile-layer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            layer-type="base"
-            name="OpenStreetMap"
-        ></l-tile-layer>
-        </l-map>
     </div>
+
 
     <router-view></router-view>
 </template>
@@ -288,6 +295,38 @@ td {
 
 th {
     background-color: #f2f2f2;
+}
+
+.container-onevent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.left-container {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.left-container h1,h2 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.commentaires h1 {
+    text-align: center;
+    margin: 20px 0 20px 0;
+}
+
+.commentaires form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 </style>
 
