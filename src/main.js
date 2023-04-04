@@ -4,6 +4,8 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import { createStore } from 'vuex'
+import 'leaflet/dist/leaflet.css';
+import mapLeaflet from './components/mapLeaflet.vue'
 
 
 
@@ -34,5 +36,8 @@ const app = createApp(App)
 app.use(router)
 app.use(VueAxios, axios)
 app.use(store)
+
+app.component('mapLeaflet', mapLeaflet)
+
 
 app.mount('#app')

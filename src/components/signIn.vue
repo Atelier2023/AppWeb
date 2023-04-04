@@ -1,22 +1,26 @@
 <template>
-    <router-link to="/homePage">Page d'accueil</router-link>
-    <h1>Page de connexion</h1>
+    <div class="container-connexion">
+        <h1>Connexion</h1>
+        <form @submit.prevent="submitForm">
+            <div>
+            <label>
+                Email:<br>
+                <input type="email" id="email" name="email" v-model="email" required>
+                <div v-if="emailError" class="error-message">{{ emailError }}</div>
 
-    <form @submit.prevent="submitForm">
-        <label>
-            Email:
-            <input type="email" id="email" name="email" v-model="email" required>
-            <div v-if="emailError" class="error-message">{{ emailError }}</div>
-
-        </label>
-        <label>
-            Mot de passe:
-            <input type="password" id="password" name="password" v-model="password" required>
-            <div v-if="passwordError" class="error-message">{{ passwordError }}</div>
-        </label>
-        <button type="submit">Se connecter</button>
-        <p v-if="error">{{ error }}</p>
-    </form>
+            </label>
+            </div>
+            <div>
+            <label>
+                Mot de passe:<br>
+                <input type="password" id="password" name="password" v-model="password" required>
+                <div v-if="passwordError" class="error-message">{{ passwordError }}</div>
+            </label>
+            </div>
+            <button type="submit" class="buttonLog">Se connecter</button>
+            <p v-if="error" class="error-message">{{ error }}</p>
+        </form>
+    </div>
 </template>
   
 <script>
@@ -91,28 +95,55 @@ export default {
 </script>
   
 <style>
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 30px;
-}
 
-nav {
-    display: flex;
-    justify-content: center;
-}
+    body {
+        background-color: #F0F2F5
+    }
+    .container-connexion {
+        justify-content: center;
+        text-align: center;
+        margin: 100px auto;
+        background-color: #FFFFFF;
+        border-radius: 10px;
+        padding:40px;
+        height: 250px;
+        width:250px;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;     
+    }
+    .container-connexion h1 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: hsl(0, 0%, 8%);
+    }
+    form {
+        display: block;
+    }
+    form div {
+        margin-top: 20px;
+    }
+    .buttonLog {
+        background-color: #F0F2F5;
+        border: 1px solid #F0F2F5;
+        border-radius: 5px;
+        color: #000000;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 35px 0 10px 0;
+        cursor: pointer;
+        background-color: rgb(112, 112, 201);
+        color: #ebebeb;
+    }
+    .buttonLog:hover {
+        background-color: rgb(68, 68, 218);
+        color: #ebebeb;
+    }
+    .error-message {
+        color: red;
+        font-size: 0.8rem;
+    }
 
-nav a {
-    font-size: 1.2rem;
-    padding: 1rem;
-    text-decoration: none;
-    color: #2c3e50;
-}
-
-nav a:hover {
-    color: lightgrey;
-}
 </style>

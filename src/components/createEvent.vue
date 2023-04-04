@@ -1,27 +1,39 @@
 <template>
-    <router-link to="/homePage">Page d'accueil</router-link>
+    <nav class="nav-event">
+        <router-link to="/homePage">Mes événements</router-link>
+        <router-link to="/createEvent"  class="onPage">Créer un événement</router-link>
+        <!-- <button v-if="this.$store.state.authenticated" @click="createEvent" class="">Créer un évenement</button> -->
+    </nav>
 
-    <form @submit.prevent="submitForm">
-        <label>
-            Titre:
-            <input type="title" id="title" name="title" v-model="title" required>
-            <div v-if="titleError" class="error-message">{{ titleError }}</div>
+    <div class="container-createpage">
+        <div class="createEvent">
+            <h2>Créer un événement</h2>
+            <form @submit.prevent="submitForm">
+                <label>
+                    Titre: <br>
+                    <input type="title" id="title" name="title" v-model="title" required><br>
+                    <div v-if="titleError" class="error-message">{{ titleError }}</div>
 
-        </label>
-        <label>
-            Adresse:
-            <input type="adress" id="adress" name="adress" v-model="adress" required>
-            <div v-if="adressError" class="error-message">{{ adressError }}</div>
+                </label>
+                <label>
+                    Adresse:<br>
+                    <input type="adress" id="adress" name="adress" v-model="adress" required><br>
+                    <div v-if="adressError" class="error-message">{{ adressError }}</div>
 
-        </label>
-        <label>
-            Date:
-            <input type="date" id="date" name="date" v-model="date" required>
-            <div v-if="dateError" class="error-message">{{ dateError }}</div>
-        </label>
-        <button type="submit">Enregistrer</button>
-        <p v-if="error">{{ error }}</p>
-    </form>
+                </label>
+                <label>
+                    Date:<br>
+                    <input style="margin-bottom: 0px;" type="date" id="date" name="date" v-model="date" required><br>
+                    <div v-if="dateError" class="error-message">{{ dateError }}</div>
+                </label>
+                <button class="buttonLog" type="submit">Ajouter</button>
+                <p v-if="error">{{ error }}</p>
+            </form>
+        </div>
+        <div class="mapLeaflet">
+            <mapLeaflet/>
+        </div>
+    </div>
 </template>
 <script>
 import axios from "axios";
@@ -90,3 +102,32 @@ export default {
     }
 }
 </script>
+
+<style>
+
+.container-createpage {
+    display: flex;
+    height: 700px;
+}
+
+.createEvent {
+    margin: 25px ;
+    padding-right: 15px;
+    max-height: 750px;
+    overflow: auto;
+    width:45%
+}
+
+.createEvent form {
+    text-align: center;
+}
+.createEvent h2 {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.createEvent input:nth-child(n + 1) {
+    margin-bottom: 25px;
+    width: 30%;
+}
+</style>

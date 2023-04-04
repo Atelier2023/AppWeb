@@ -1,43 +1,42 @@
 <template>
-    <nav>
-        <router-link to="/homePage">Page d'accueil</router-link>
-        <h1></h1>
-        <router-link v-if="!this.$store.state.authenticated" to="/signin">connexion</router-link>
-        <router-link v-if="!this.$store.state.authenticated" to="/signup">inscription</router-link>
-        <button v-if="this.$store.state.authenticated" @click="createEvent">Créer un évenement</button>
-        <router-link v-if="this.$store.state.authenticated" class="nav-link" to="/logout">Déconnexion</router-link>
+    <nav class="nav-event">
+        <router-link to="/homePage" class="onPage">Mes événements</router-link>
+        <button v-if="this.$store.state.authenticated" @click="createEvent" class="createEventButton">Créer un évenement</button>
     </nav>
 
-    <div v-if="events != ''">
-
-        <div v-for="(event, index) in events" :key="event.id">
-            <table style="border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <th style="border: 1px solid black; padding: 5px;">Titre de l'événement</th>
-                        <th style="border: 1px solid black; padding: 5px;">Date de l'événement</th>
-                        <th style="border: 1px solid black; padding: 5px;">Adresse de l'événement</th>
-                        <th style="border: 1px solid black; padding: 5px;">Statut</th>
-                        <th style="border: 1px solid black; padding: 5px;">Créateur de l'événement</th>
-                        <th style="border: 1px solid black; padding: 5px;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="border: 1px solid black; padding: 5px;">{{ event.title }}</td>
-                        <td style="border: 1px solid black; padding: 5px;">{{ event.date_event }}</td>
-                        <td style="border: 1px solid black; padding: 5px;">{{ event.address }}</td>
-                        <td style="border: 1px solid black; padding: 5px;">{{ event.state }}</td>
-                        <td style="border: 1px solid black; padding: 5px;">{{ event.username[0].firstname }}</td>
-                        <td style="border: 1px solid black; padding: 5px;"><button style="padding: 5px;"
-                                @click="goToOneEvent(event.id_event)">Détails</button></td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="container-homepage">
+        <div v-if="events != ''" class="allEvents">
+            <h2>Mes événements</h2>
+            <div v-for="(event, index) in this.events" :key="event.id">
+                <table style="border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid black; padding: 5px;">Titre de l'événement</th>
+                            <th style="border: 1px solid black; padding: 5px;">Date de l'événement</th>
+                            <th style="border: 1px solid black; padding: 5px;">Adresse de l'événement</th>
+                            <th style="border: 1px solid black; padding: 5px;">Statut</th>
+                            <th style="border: 1px solid black; padding: 5px;">Créateur de l'événement</th>
+                            <th style="border: 1px solid black; padding: 5px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid black; padding: 5px;">{{ event.title }}</td>
+                            <td style="border: 1px solid black; padding: 5px;">{{ event.date_event.substring(0,10) }}</td>
+                            <td style="border: 1px solid black; padding: 5px;">{{ event.address }}</td>
+                            <td style="border: 1px solid black; padding: 5px;">{{ event.state }}</td>
+                            <td style="border: 1px solid black; padding: 5px;">{{ event.username }}</td>
+                            <td style="border: 1px solid black; padding: 5px;"><button style="padding: 5px;"
+                                    @click="goToOneEvent(event.id_event)">Détails</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mapLeaflet">
+            <mapLeaflet/>
         </div>
     </div>
-
-
 
     <router-view></router-view>
 </template>
@@ -47,7 +46,6 @@ import axios from "axios";
 
 export default {
     name: 'homePage',
-    components: {},
     data() {
         return {
             events: '',
@@ -90,14 +88,14 @@ export default {
             );
         },
         getEvents() {
-            axios.get(`http://localhost:19100/events/getEvent/${this.$store.state.id}`)
+            axios.get(`http://localhost:19100/events/getEvent/${this.$store.state.id}}`)
                 .then(response => {
                     this.events = response.data;
 
                     this.events.forEach(event => {
                         axios.get(`http://localhost:19102/users/getUser/${event.id_user}`)
                             .then(response => {
-                                event.username = response.data;
+                                event.username = response.data[0].firstname;
                             })
                             .catch(error => {
                                 console.log(error);
@@ -156,30 +154,57 @@ export default {
 </script>
 
 <style>
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 30px;
-}
+    .nav-event {
+        display: flex;
+        background-color: #EEEEEE;
+    }
 
-nav {
-    display: flex;
-    justify-content: center;
-}
+    .nav-event a {
+        text-decoration: none;
+        color: #242429;
+    }
 
-nav a {
-    font-size: 1.2rem;
-    padding: 1rem;
-    text-decoration: none;
-    color: #2c3e50;
-}
+    .nav-event a:hover {
+        border-bottom: #242429 solid 2px;
+    }
+    .onPage {
+        border-bottom: #242429 solid 2px;
+    }
+    .createEventButton {
+        color: #242429;
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        border: none;
+        font-size: 1em;
+        margin: 0;
+    }
+    .createEventButton:hover {
+        color: #242429;
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        border: none;
+        font-size: 1em;
+        margin: 0;
+        cursor: pointer;
+        border-bottom: #242429 solid 2px;
+    }
+    .container-homepage {
+        display: flex;
+        height: 700px;
+    }
+    .allEvents {
+        margin: 25px ;
+        padding-right: 15px;
+        max-height: 750px;
+        overflow: auto;
+        width:45%
+    }
+    .allEvents h2 {
+        margin-bottom: 25px;
+        text-align: center;
+    }
+    .mapLeaflet {
+        width: 70%;
+        margin-top:25px;
+    }
 
-nav a:hover {
-    color: lightgrey;
-}
+    
 </style>
-
-

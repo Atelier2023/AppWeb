@@ -1,35 +1,33 @@
 <template>
-    <router-link to="/homePage">Page d'accueil</router-link>
-
-    <div>
-        <h1>Page d'inscription</h1>
+    <div class="container-inscription">
+        <h1>Inscription</h1>
         <form @submit.prevent="submitForm">
             <div>
-                <label for="email">Email:</label>
+                <label for="email">Email:</label><br>
                 <input type="email" id="email" name="email" v-model="email" required>
                 <div v-if="emailError" class="error-message">{{ emailError }}</div>
             </div>
             <div>
-                <label for="password">Mot de passe:</label>
+                <label for="password">Mot de passe:</label><br>
                 <input type="password" id="password" name="password" v-model="password" required>
                 <div v-if="passwordError" class="error-message">{{ passwordError }}</div>
             </div>
             <div>
-                <label for="address">Adresse:</label>
+                <label for="address">Adresse:</label><br>
                 <input type="text" id="address" name="address" v-model="address" required>
                 <div v-if="addressError" class="error-message">{{ addressError }}</div>
             </div>
             <div>
-                <label for="phone">Numéro de téléphone:</label>
+                <label for="phone">Numéro de téléphone:</label><br>
                 <input type="tel" id="phone" name="phone" v-model="phone" required>
                 <div v-if="phoneError" class="error-message">{{ phoneError }}</div>
             </div>
             <div>
-                <label for="nickname">Surnom:</label>
+                <label for="nickname">Surnom:</label><br>
                 <input type="text" id="nickname" name="nickname" v-model="nickname" required>
                 <div v-if="nicknameError" class="error-message">{{ nicknameError }}</div>
             </div>
-            <button type="submit">S'inscrire</button>
+            <button type="submit" class="buttonLog">S'inscrire</button>
         </form>
     </div>
 </template>
@@ -130,32 +128,22 @@ export default {
 
 
 <style>
-.error-message {
-    color: red;
-}
+    .container-inscription {
+        justify-content: center;
+        text-align: center;
+        margin: 100px auto;
+        background-color: #FFFFFF;
+        border-radius: 10px;
+        padding:40px;
+        height: 500px;
+        width:250px;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;     
 
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 30px;
-}
-
-nav {
-    display: flex;
-    justify-content: center;
-}
-
-nav a {
-    font-size: 1.2rem;
-    padding: 1rem;
-    text-decoration: none;
-    color: #2c3e50;
-}
-
-nav a:hover {
-    color: lightgrey;
-}
+    }
+    form {
+        display: block;
+    }
+    form div {
+        margin-top: 20px;
+    }
 </style>

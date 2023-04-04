@@ -14,8 +14,7 @@
     <div v-for="(participant, index) in participants" :key="participant.id">{{ participant }} >
     </div>
     <h2>Lien de partage :</h2>
-    <p>http://localhost:5173/shared/{{ events.shared_url }}</p>
-    <button @click="goToSharedURL(events.shared_url)">Shared URL</button>
+    <a :href="'http://localhost:5173/shared/' +events.shared_url">http://localhost:5173/shared/{{ events.shared_url }}</a>
     <h1>Commentaires de l'évenement :</h1>
 
     <div v-for="(commentaire, index) in coms" :key="commentaire.id">
@@ -31,7 +30,7 @@
                 <tr>
                     <td>{{ commentaire.username[0].firstname }}</td>
                     <td>{{ commentaire.commentaire }}</td>
-                    <td>{{ commentaire.date }}</td>
+                    <td>{{ commentaire.date.substring(0,10) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -233,36 +232,14 @@ export default {
         this.getParticipants()
     },
     computed: {
-
+        substringDate() {
+            return this.events.date_event.substring(0, 10)
+        },
     }
 }
 </script>
 
 <style>
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 30px;
-}
-
-nav {
-    display: flex;
-    justify-content: center;
-}
-
-nav a {
-    font-size: 1.2rem;
-    padding: 1rem;
-    text-decoration: none;
-    color: #2c3e50;
-}
-
-nav a:hover {
-    color: lightgrey;
-}
 
 table {
     border-collapse: collapse;
