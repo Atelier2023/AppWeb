@@ -40,6 +40,7 @@ import axios from "axios";
 
 export default {
     name: 'signin',
+
     data() {
         return {
             title: '',
@@ -49,6 +50,7 @@ export default {
             adressError: '',
             dateError: '',
             error: '',
+
         }
     },
     methods: {
@@ -81,6 +83,7 @@ export default {
                 }
             );
         },
+
         validatetitle(title) {
             if (!title) {
                 return 'Veuillez entrer une titre.'
@@ -99,6 +102,9 @@ export default {
             }
             return ''
         },
+
+    },
+    mounted() {
     }
 }
 </script>
