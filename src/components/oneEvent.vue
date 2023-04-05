@@ -17,7 +17,10 @@
     <div class="container-onevent">
         <div class="left-container">
             <h1>Participants</h1>
-            <div class="participants">
+            <div class="no-participant" v-if="participants.length === 0">
+                Aucun participant à l'événement
+            </div>
+            <div class="participants" v-else>
                 <div v-for="(participant, index) in participants" :key="participant.id" class="participant">
                     <div class="part-top">
                         <span class="part-name">{{ participant.participants.name }}</span>
@@ -33,15 +36,17 @@
             </div>
             <div class="partage">
                 <h3>Lien de partage :</h3>
-                <a :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{
-                    events.shared_url }}/{{ events.id_event }}</a>
+                <a id="partage-link"
+                    :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{
+                        events.shared_url }}/{{ events.id_event }}</a>
+                <button @click="copy()">Copy text</button>
             </div>
         </div>
         <div style="height:750px; width:1050px; margin-right: 15px;;" class="mapLeaflet">
             <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[this.lat, this.long]">
                 <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
                     name="OpenStreetMap"></l-tile-layer>
-                <l-marker :lat-lng="[this.lat, this.long]">
+                <l-marker ref="marker" :lat-lng="[this.lat, this.long]">
                     <l-popup style="text-align: center;">
                         <h2>{{ events.title }}</h2>
                         <span><i>{{ events.date_event.substring(0, 10) }}</i></span>
@@ -55,11 +60,15 @@
     <div class="commentaires">
 
         <h1>Commentaires</h1>
-
-        <div v-for="(commentaire, index) in coms" :key="commentaire.id" class="commentaire">
-            <span class="com-user">{{ commentaire.username[0].firstname }}</span><br>
-            <span class="com-date"><i>{{ commentaire.date.substring(0, 10) }}</i></span><br>
-            <span class="com-com">{{ commentaire.commentaire }}</span>
+        <div class="no-participant" v-if="coms.length === 0">
+            Aucun commentaire n'a été posté pour l'instant
+        </div>
+        <div v-else>
+            <div v-for="(commentaire, index) in coms" :key="commentaire.id" class="commentaire">
+                <span class="com-user">{{ commentaire.username[0].firstname }}</span><br>
+                <span class="com-date"><i>{{ commentaire.date.substring(0, 10) }}</i></span><br>
+                <span class="com-com">{{ commentaire.commentaire }}</span>
+            </div>
         </div>
 
         <div class="form-com">
@@ -196,6 +205,7 @@ export default {
                             (response) => {
                                 if (response.status === 201) {
                                     this.getComs()
+                                    this.com = ''
                                     this.$router.push(`/oneEvent/${this.$route.params.id}`)
                                 }
                                 console.log(response);
@@ -231,6 +241,7 @@ export default {
                                             (response) => {
                                                 if (response.status === 201) {
                                                     this.getComs()
+                                                    this.com = ''
                                                     this.$router.push(`/oneEvent/${this.$route.params.id}`)
                                                 }
                                                 console.log(response);
@@ -256,6 +267,7 @@ export default {
                     console.log(response)
                     this.participants = response.data.participants;
                     console.log(this.participants)
+                    this.$refs.marker.leafletObject.openPopup()
                 })
                 .catch(error => {
                     console.log(error);
@@ -273,6 +285,7 @@ export default {
                     console.log((response.data[0].lat + " " + response.data[0].lon))
                     this.lat = response.data[0].lat;
                     this.long = response.data[0].lon;
+                    this.$refs.marker.leafletObject.openPopup()
                 })
                 .catch((error) => {
                     console.log(error)
@@ -282,6 +295,10 @@ export default {
             const date = new Date(this.events.date_event);
             return date.toLocaleDateString("fr");
         },
+        copy() {
+            let text = document.getElementById('partage-link');
+            navigator.clipboard.writeText(text)
+        }
 
     },
     mounted() {
@@ -435,6 +452,12 @@ textarea {
     height: 100px;
     border-radius: 5px;
     border: 1px solid #838383;
+}
+
+.no-participant {
+    margin: 15px auto;
+    font-size: 1.4em;
+    text-align: center
 }
 </style>
 

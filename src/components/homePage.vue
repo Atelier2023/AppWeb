@@ -9,30 +9,14 @@
     <div class="container-homepage">
         <div v-if="events != ''" class="allEvents">
             <h2>Mes événements</h2>
-            <div v-for="(event, index) in this.events" :key="event.id">
-                <table style="border-collapse: collapse;">
-                    <thead>
-                        <tr>
-                            <th style="border: 1px solid black; padding: 5px;">Titre de l'événement</th>
-                            <th style="border: 1px solid black; padding: 5px;">Date de l'événement</th>
-                            <th style="border: 1px solid black; padding: 5px;">Adresse de l'événement</th>
-                            <th style="border: 1px solid black; padding: 5px;">Statut</th>
-                            <th style="border: 1px solid black; padding: 5px;">Créateur de l'événement</th>
-                            <th style="border: 1px solid black; padding: 5px;"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="border: 1px solid black; padding: 5px;">{{ event.title }}</td>
-                            <td style="border: 1px solid black; padding: 5px;">{{ event.date_event.substring(0, 10) }}</td>
-                            <td style="border: 1px solid black; padding: 5px;">{{ event.address }}</td>
-                            <td style="border: 1px solid black; padding: 5px;">{{ event.state }}</td>
-                            <td style="border: 1px solid black; padding: 5px;">{{ event.username }}</td>
-                            <td style="border: 1px solid black; padding: 5px;"><button style="padding: 5px;"
-                                    @click="goToOneEvent(event.id_event)">Détails</button></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div v-for="(event, index) in this.events" :key="event.id" class="event-home">
+                <div class="event-left">
+                <span class="event-title"><b>{{ event.title }}</b></span> - <i style="font-size: 0.9em;">{{ event.date_event.substring(0, 10) }} </i><span class="state-event"> {{ event.state }} </span><br>
+                <br>{{ event.address }} <br><br>
+                <u> Organisateur :</u> {{ event.username }}
+                </div>
+                <button class="buttonLog" @click="goToOneEvent(event.id_event)">Détails</button>
+                <br>
             </div>
         </div>
 
@@ -172,6 +156,32 @@ export default {
     border-bottom: #242429 solid 2px;
 }
 
+.event-home {
+    padding: 25px 25px 80px 25px;
+    border: #242429 solid 2px;
+    background-color: white;
+}
+
+.event-title {
+    font-size: 1.3em;
+}
+
+.state-event {
+    float: right;
+}
+
+.event-home button {
+    float: right;
+}
+
+.allEvents h2 {
+    border: 1px solid black;
+    color: #f2f2f2;
+    padding: 15px;
+    font-size: 1.6em;
+    background-color: rgb(67, 67, 216);
+}
+
 .createEventButton {
     color: #242429;
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -196,16 +206,11 @@ export default {
 }
 
 .allEvents {
-    margin: 25px;
+    margin: 50px auto;
     padding-right: 15px;
     max-height: 750px;
     overflow: auto;
     width: 45%
-}
-
-.allEvents h2 {
-    margin-bottom: 25px;
-    text-align: center;
 }
 
 .mapLeaflet {
