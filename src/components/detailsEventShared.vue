@@ -36,6 +36,7 @@
                     <l-popup style="text-align: center;">
                         <h2>{{ events.title }}</h2>
                         <span><i>{{ events.date_event.substring(0, 10) }}</i></span>
+
                         <p>{{ events.address }}</p>
                     </l-popup>
                 </l-marker>
@@ -46,16 +47,15 @@
     <div class="commentaires">
 
         <h1>Commentaires</h1>
-        <!-- <div class="no-participant" v-if="coms.length === 0">
+        <div class="no-participant" v-if="coms.length === 0">
             Aucun commentaire n'a été posté pour l'instant
         </div>
         <div v-else>
             <div v-for="(commentaire, index) in coms" :key="commentaire.id" class="commentaire">
-                <span class="com-user">{{ commentaire.username[0].firstname }}</span><br>
                 <span class="com-date"><i>{{ commentaire.date.substring(0, 10) }}</i></span><br>
                 <span class="com-com">{{ commentaire.commentaire }}</span>
             </div>
-        </div> -->
+        </div>
 
         <div class="form-com">
             <form @submit.prevent="addCom">
@@ -84,18 +84,6 @@ export default {
     },
     data() {
         return {
-            nom: '',
-            prenom: '',
-            telephone: '',
-            comment: '',
-            selected: '',
-            nomError: '',
-            email: '',
-            prenomError: '',
-            telephoneError: '',
-            commentError: '',
-            presenceError: '',
-            emailError: '',
             error: '',
             id_event: '',
             shared_url: this.$route.params.id,
@@ -103,6 +91,8 @@ export default {
             participants: '',
             urlperso: '',
             id_participant: '',
+            com: '',
+            coms: '',
             lat: '',
             long: '',
             zoom: 15,
@@ -136,11 +126,8 @@ export default {
                 });
         },
         setMarker() {
-            console.log(this.events)
             axios.get(`https://nominatim.openstreetmap.org/search.php?q=${this.events.address}&format=jsonv2`)
                 .then((response) => {
-                    console.log(this.events.address)
-                    console.log((response.data[0].lat + " " + response.data[0].lon))
                     this.lat = response.data[0].lat;
                     this.long = response.data[0].lon;
                     this.$refs.markerShared.leafletObject.openPopup()
@@ -149,10 +136,60 @@ export default {
                     console.log(error)
                 })
         },
+        addCom() {
+
+            const current = new Date();
+            const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
+            axios.post("http://localhost:19100/commentaires/create", {
+                commentaire: this.com,
+                id_user: this.$route.params.id_participant,
+                id_event: this.$route.params.id_event,
+                date: date
+            }).then(
+                (response) => {
+                    if (response.status === 201) {
+                        this.getComs()
+                        this.com = ''
+                    }
+                    console.log(response);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+        },
+        getComs() {
+            axios.get(`http://localhost:19100/commentaires/${this.$route.params.id_event}`)
+                .then(response => {
+                    this.coms = response.data.comments;
+                    this.coms.forEach(com => {
+                        /* axios.get(`http://localhost:19102/users/getUser/${com.id_user}`)
+                            .then(response => {
+                                com.username = response.data;
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            }); */
+                        /* axios.get(`http://localhost:19100/participants/getParticipant/${com.id_user}`)
+                            .then(response => {
+                                com.username = response.data;
+                            })
+                        console.log(response)
+                            .catch(error => {
+                                console.log(error);
+                            }); */
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+
     },
     mounted() {
         this.getEvents()
         this.getParticipants()
+        this.getComs()
 
     },
 }
