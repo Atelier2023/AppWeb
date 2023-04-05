@@ -37,7 +37,7 @@
             <div class="partage">
                 <h3>Lien de partage :</h3>
                 <a id="partage-link" :href="'http://localhost:5173/shared/' + events.shared_url + '/' + events.id_event">
-                    http://localhost:5173/shared/{{events.shared_url }}/{{ events.id_event }}</a>
+                    http://localhost:5173/shared/{{ events.shared_url }}/{{ events.id_event }}</a>
                 <button @click="copy()">Copy text</button>
             </div>
         </div>
@@ -64,7 +64,6 @@
         </div>
         <div v-else>
             <div v-for="(commentaire, index) in coms" :key="commentaire.id" class="commentaire">
-                <span class="com-user">{{ commentaire.username[0].firstname }}</span><br>
                 <span class="com-date"><i>{{ commentaire.date.substring(0, 10) }}</i></span><br>
                 <span class="com-com">{{ commentaire.commentaire }}</span>
             </div>
@@ -138,7 +137,6 @@ export default {
                                     }
                                 })
                                     .then(response => {
-                                        console.log(response)
                                         this.$store.state.token = response.data.accesstoken;
                                         this.$router.push('/createEvent')
                                     })
@@ -154,10 +152,8 @@ export default {
         getEvents() {
             axios.get(`http://localhost:19100/events/${this.$route.params.id}`)
                 .then(response => {
-                    console.log(response.data)
                     this.events = response.data;
                     this.address = response.data.address;
-                    console.log(this.events)
                     this.setMarker();
 
                 })
@@ -184,6 +180,7 @@ export default {
                     console.log(error);
                 });
         },
+
         addCom() {
             axios.get('http://localhost:19102/users/validate', {
                 headers: {
@@ -191,7 +188,6 @@ export default {
                 }
             }).then(
                 (response) => {
-                    console.log(response)
                     if (response.status === 200) {
                         const current = new Date();
                         const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
@@ -207,7 +203,6 @@ export default {
                                     this.com = ''
                                     this.$router.push(`/oneEvent/${this.$route.params.id}`)
                                 }
-                                console.log(response);
                             },
                             (error) => {
                                 console.log(error);
@@ -227,7 +222,6 @@ export default {
                                     }
                                 })
                                     .then(response => {
-                                        console.log(response)
                                         this.$store.state.token = response.data.accesstoken;
                                         const current = new Date();
                                         const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
@@ -263,9 +257,7 @@ export default {
         getParticipants() {
             axios.get(`http://localhost:19100/participants/getParticipants/${this.$route.params.id}`)
                 .then(response => {
-                    console.log(response)
                     this.participants = response.data.participants;
-                    console.log(this.participants)
                     this.$refs.marker.leafletObject.openPopup()
                 })
                 .catch(error => {
@@ -276,12 +268,9 @@ export default {
             this.$router.push(`/shared/${id}`)
         }, */
         setMarker() {
-            console.log(this.events.address)
             //axios.get(`http://api.positionstack.com/v1/forward?access_key=${this.apiKey}&query=${this.events.address}`)
             axios.get(`https://nominatim.openstreetmap.org/search.php?q=${this.events.address}&format=jsonv2`)
                 .then((response) => {
-                    console.log(this.events.address)
-                    console.log((response.data[0].lat + " " + response.data[0].lon))
                     this.lat = response.data[0].lat;
                     this.long = response.data[0].lon;
                     this.$refs.marker.leafletObject.openPopup()
