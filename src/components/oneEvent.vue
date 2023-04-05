@@ -26,6 +26,8 @@
                     </div>
                     <div class="part-bot">
                         <span class="part-state">{{ participant.participants.tel_number }}</span>
+                        &nbsp; <br>
+                        <span class="part-state">{{ participant.participants.comment }}</span>
                     </div>
                 </div>
             </div>
