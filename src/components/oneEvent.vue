@@ -36,9 +36,8 @@
             </div>
             <div class="partage">
                 <h3>Lien de partage :</h3>
-                <a id="partage-link"
-                    :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{
-                        events.shared_url }}/{{ events.id_event }}</a>
+                <a id="partage-link" :href="'http://localhost:5173/shared/' + events.shared_url + '/' + events.id_event">
+                    http://localhost:5173/shared/{{events.shared_url }}/{{ events.id_event }}</a>
                 <button @click="copy()">Copy text</button>
             </div>
         </div>
