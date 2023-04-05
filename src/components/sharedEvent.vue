@@ -83,6 +83,7 @@ export default {
                         firstname: this.prenom,
                         tel_number: this.telephone,
                         state: this.selected,
+                        comment: this.comment,
                         id_event: response.data.id_event,
                     }).then(
                         (response) => {

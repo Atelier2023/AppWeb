@@ -8,8 +8,7 @@
     <div class="detail-event">
         <h1>{{ events.title }}</h1>
         <div class="detail-event-info">
-            <span class="detail-date">Date de l'évenement : <b>{{ events.date_event }}</b></span>
-            &nbsp;
+            <span class="detail-date">Date de l'évenement : <b>{{ this.getDate() }}</b></span>
             <br>
             <span class="detail-address">Adresse : <b>{{ events.address }}</b></span>
             <span class="detail-creater">{{ events.username }}</span>
@@ -36,7 +35,7 @@
                     events.shared_url }}</a>
             </div>
         </div>
-        <div style="height:750px; width:1050px" class="mapLeaflet">
+        <div style="height:750px; width:1050px; margin-right: 15px;;" class="mapLeaflet">
             <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[this.lat, this.long]">
                 <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
                     name="OpenStreetMap"></l-tile-layer>
@@ -276,6 +275,10 @@ export default {
                 .catch((error) => {
                     console.log(error)
                 })
+        },
+        getDate() {
+            const date = new Date(this.events.date_event);
+            return date.toLocaleDateString("fr");
         },
 
     },
