@@ -1,7 +1,14 @@
 <template>
-    <router-link to="/homePage">Page d'accueil</router-link>
-    <h1>shared URL</h1>
-
+    <h1>Formulaire d'inscription à l'événement</h1>
+    <div class="detail-event">
+        <h1>{{ events.title }}</h1>
+        <div class="detail-event-info">
+            <span class="detail-date">Date de l'évenement : <b>{{ this.getDate() }}</b></span>
+            <br>
+            <span class="detail-address">Adresse : <b>{{ events.address }}</b></span>
+            <span class="detail-creater">{{ events.username }}</span>
+        </div>
+    </div>
     <form @submit.prevent="submitForm">
         <label>
             Nom:
@@ -28,16 +35,35 @@
         <label>
             Présence:
             <select name="presence" id="presence" v-model="selected">
-                <option disabled value="">Selectionnez une option</option>
+                <option disabled value="" selected>Selectionnez une option</option>
                 <option>present</option>
                 <option>missing</option>
-                <option>not answered</option>
             </select>
             <div v-if="presenceError" class="error-message">{{ presenceError }}</div>
         </label>
         <button type="submit">Enregistrer</button>
         <p v-if="error">{{ error }}</p>
     </form>
+    <label id="urlperso">{{ urlperso }}</label>
+    <div class="container-onevent">
+        <div class="left-container">
+            <h1>Participants</h1>
+            <div class="participants">
+                <div v-for="(participant, index) in participants" :key="participant.id" class="participant">
+                    <div class="part-top">
+                        <span class="part-name">{{ participant.participants.name }}</span>
+                        <span class="part-firstname">{{ participant.participants.firstname }}</span>
+                        <span class="part-tel">{{ participant.participants.state }}</span>
+                    </div>
+                    <div class="part-bot">
+                        <span class="part-state">{{ participant.participants.tel_number }}</span>
+                        &nbsp; <br>
+                        <span class="part-state">{{ participant.participants.comment }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -60,7 +86,10 @@ export default {
             presenceError: '',
             error: '',
             id_event: '',
-            shared_url: this.$route.params.id
+            shared_url: this.$route.params.id,
+            events: '',
+            participants: '',
+            urlperso: '',
         }
     },
     methods: {
@@ -88,7 +117,10 @@ export default {
                     }).then(
                         (response) => {
                             if (response.status === 201) {
-                                this.$router.push('/homePage')
+                                this.getParticipants();
+
+
+                                this.urlperso = `http://localhost:5173/shared/${this.$route.params.id}/${this.$route.params.id_event}`
                             }
                         },
                         (error) => {
@@ -132,9 +164,42 @@ export default {
                 return 'Vous devez selectionner une option'
             }
             return ''
-        }
-    }
+        },
+        getEvents() {
+            axios.get(`http://localhost:19100/events/${this.$route.params.id_event}`)
+                .then(response => {
+                    console.log(response.data)
+                    this.events = response.data;
+                    this.address = response.data.address;
+                    console.log(this.events)
+                    //this.setMarker();
 
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        getDate() {
+            const date = new Date(this.events.date_event);
+            return date.toLocaleDateString("fr");
+        },
+        getParticipants() {
+            axios.get(`http://localhost:19100/participants/getParticipants/${this.$route.params.id_event}`)
+                .then(response => {
+                    console.log(response)
+                    this.participants = response.data.participants;
+                    console.log(this.participants)
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+    },
+    mounted() {
+        this.getEvents()
+        this.getParticipants()
+
+    },
 }
 </script>
 

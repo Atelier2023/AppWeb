@@ -34,7 +34,7 @@
             <div class="partage">
                 <h3>Lien de partage :</h3>
                 <a :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{
-                    events.shared_url }}</a>
+                    events.shared_url }}/{{ events.id_event }}</a>
             </div>
         </div>
         <div style="height:750px; width:1050px; margin-right: 15px;;" class="mapLeaflet">

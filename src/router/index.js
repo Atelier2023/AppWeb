@@ -6,6 +6,7 @@ import createEventRouter from '@/components/createEvent.vue'
 import homePageRouter from '@/components/homePage.vue'
 import oneEventRouter from '@/components/oneEvent.vue'
 import sharedEventRouter from '@/components/sharedEvent.vue'
+import detailsEventSharedRouter from '@/components/detailsEventShared.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,16 +36,21 @@ const router = createRouter({
       path: '/homePage',
       name: 'homePage',
       component: homePageRouter
-    }, 
+    },
     {
       path: '/oneEvent/:id',
       name: 'oneEvent',
       component: oneEventRouter
-    }, 
+    },
     {
-      path: '/shared/:id',
+      path: '/shared/:id/:id_event',
       name: 'sharedEvent',
       component: sharedEventRouter
+    },
+    {
+      path: '/shared/:id/:id_event/:id_participant',
+      name: 'detailsEventShared',
+      component: detailsEventSharedRouter
     },
   ]
 })
