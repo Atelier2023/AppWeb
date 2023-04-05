@@ -11,6 +11,7 @@
             <span class="detail-creater">{{ events.username }}</span>
         </div>
     </div>
+<<<<<<< HEAD
     <div class="shared-container">
         <form @submit.prevent="submitForm">
             <h1>Formulaire</h1>
@@ -25,6 +26,11 @@
                 <input type="text" id="prenom" name="prenom" v-model="prenom" required>
                 <div v-if="prenomError" class="error-message">{{ prenomError }}</div>
 
+            </label><br>
+            <label><br>
+                Email:<br>
+                <input type="text" id="email" name="email" v-model="email" required>
+                <div v-if="emailError" class="error-message">{{ emailError }}</div>
             </label><br>
             <label>
                 Numéro Tel:<br>
@@ -63,6 +69,63 @@
                             &nbsp; <br>
                             <span class="part-state">{{ participant.participants.comment }}</span>
                         </div>
+=======
+    <form @submit.prevent="submitForm">
+        <label>
+            Nom:
+            <input type="text" id="nom" name="nom" v-model="nom" required>
+            <div v-if="nomError" class="error-message">{{ nomError }}</div>
+
+        </label>
+        <label>
+            Prénom:
+            <input type="text" id="prenom" name="prenom" v-model="prenom" required>
+            <div v-if="prenomError" class="error-message">{{ prenomError }}</div>
+
+        </label>
+        <label>
+            Numéro Tel:
+            <input type="text" id="telephone" name="telephone" v-model="telephone" required>
+            <div v-if="telephoneError" class="error-message">{{ telephoneError }}</div>
+        </label>
+        <label>
+            Email:
+            <input type="text" id="email" name="email" v-model="email" required>
+            <div v-if="emailError" class="error-message">{{ emailError }}</div>
+        </label>
+        <label>
+            commentaire:
+            <input type="text" id="comment" name="comment" v-model="comment" required>
+            <div v-if="commentError" class="error-message">{{ commentError }}</div>
+        </label>
+        <label>
+            Présence:
+            <select name="presence" id="presence" v-model="selected">
+                <option disabled value="" selected>Selectionnez une option</option>
+                <option>present</option>
+                <option>missing</option>
+            </select>
+            <div v-if="presenceError" class="error-message">{{ presenceError }}</div>
+        </label>
+        <button type="submit">Enregistrer</button>
+        <p v-if="error">{{ error }}</p>
+    </form>
+    <label id="urlperso">{{ urlperso }}</label>
+    <div class="container-onevent">
+        <div class="left-container">
+            <h1>Participants</h1>
+            <div class="participants">
+                <div v-for="(participant, index) in participants" :key="participant.id" class="participant">
+                    <div class="part-top">
+                        <span class="part-name">{{ participant.participants.name }}</span>
+                        <span class="part-firstname">{{ participant.participants.firstname }}</span>
+                        <span class="part-tel">{{ participant.participants.state }}</span>
+                    </div>
+                    <div class="part-bot">
+                        <span class="part-state">{{ participant.participants.tel_number }}</span>
+                        &nbsp; <br>
+                        <span class="part-state">{{ participant.participants.comment }}</span>
+>>>>>>> ee0a4e177a08ebd8653e7c9dcc09aa94fb169358
                     </div>
                 </div>
         </div>
