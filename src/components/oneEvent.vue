@@ -64,6 +64,7 @@
         </div>
         <div v-else>
             <div v-for="(commentaire, index) in coms" :key="commentaire.id" class="commentaire">
+                <span class="com-user">Participant</span> <br>
                 <span class="com-date"><i>{{ commentaire.date.substring(0, 10) }}</i></span><br>
                 <span class="com-com">{{ commentaire.commentaire }}</span>
             </div>
