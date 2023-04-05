@@ -1,7 +1,8 @@
 <template>
     <nav class="nav-event">
         <router-link to="/homePage">Mes événements</router-link>
-        <button v-if="this.$store.state.authenticated" @click="createEvent"  class="onPage createEventButton">Créer un évenement</button>
+        <button v-if="this.$store.state.authenticated" @click="createEvent" class="onPage createEventButton">Créer un
+            évenement</button>
     </nav>
 
     <div class="container-createpage">
@@ -29,20 +30,17 @@
                 <p v-if="error">{{ error }}</p>
             </form>
         </div>
-        <l-map ref="map" @ready="getAddress" :use-global-leaflet="false" v-model:zoom="zoom" :center="[48.691673232896015, 6.182424175083767]">
-        <l-tile-layer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            layer-type="base"
-            name="OpenStreetMap"
-        ></l-tile-layer>
-        <l-marker ref="marker" :lat-lng="[this.lat, this.long]">
-            <l-popup>
-                <span>{{ this.adressPopup }}</span>
-            </l-popup>
-        </l-marker>
+        <l-map ref="map" @ready="getAddress" :use-global-leaflet="false" v-model:zoom="zoom"
+            :center="[48.691673232896015, 6.182424175083767]">
+            <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
+                name="OpenStreetMap"></l-tile-layer>
+            <l-marker ref="marker" :lat-lng="[this.lat, this.long]">
+                <l-popup>
+                    <span>{{ this.adressPopup }}</span>
+                </l-popup>
+            </l-marker>
         </l-map>
     </div>
-
 </template>
 <script>
 import axios from "axios";
@@ -69,26 +67,27 @@ export default {
             dateError: '',
             error: '',
             zoom: 14,
-            apiKey:'262e66a1a59d85f290a21363615184fa',
-            adressPopup:'',
-            lat:'',
-            long:''
+            apiKey: '262e66a1a59d85f290a21363615184fa',
+            adressPopup: '',
+            lat: '',
+            long: ''
         }
     },
     methods: {
         getAddress(map) { // Onclick sur la map, récupère l'adresse et l'affiche dans le popup et dans le champ adresse
             map.on('click', (e) => {
+                console.log(e.latlng)
                 axios.get(`http://api.positionstack.com/v1/reverse?access_key=${this.apiKey}&query=${e.latlng.lat},${e.latlng.lng}`)
-                .then((response) => {
-                  this.adress = response.data.data[0].label
-                  this.adressPopup = response.data.data[0].label
-                  this.lat = response.data.data[0].latitude
-                  this.long = response.data.data[0].longitude
-                  this.$refs.marker.leafletObject.openPopup()
-                })
-                .catch((error) => {
-                  console.log(error)
-                })
+                    .then((response) => {
+                        this.adress = response.data.data[0].label
+                        this.adressPopup = response.data.data[0].label
+                        this.lat = response.data.data[0].latitude
+                        this.long = response.data.data[0].longitude
+                        this.$refs.marker.leafletObject.openPopup()
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
             })
         },
         submitForm() {
@@ -147,23 +146,23 @@ export default {
 </script>
 
 <style>
-
 .container-createpage {
     display: flex;
     height: 700px;
 }
 
 .createEvent {
-    margin: 25px ;
+    margin: 25px;
     padding-right: 15px;
     max-height: 750px;
     overflow: auto;
-    width:45%
+    width: 45%
 }
 
 .createEvent form {
     text-align: center;
 }
+
 .createEvent h2 {
     margin-bottom: 25px;
     text-align: center;

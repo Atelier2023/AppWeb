@@ -1,13 +1,16 @@
 <template>
     <nav class="nav-event">
         <router-link to="/homePage">Mes événements</router-link>
-        <button v-if="this.$store.state.authenticated" @click="createEvent"  class="onPage createEventButton">Créer un évenement</button>
+        <button v-if="this.$store.state.authenticated" @click="createEvent" class="onPage createEventButton">Créer un
+            évenement</button>
     </nav>
 
     <div class="detail-event">
         <h1>{{ events.title }}</h1>
-        <span class="detail-date">{{ events.date_event }}</span>
-        <span class="detail-address">{{ events.address }}</span>
+        <span class="detail-date">Date de l'évenement : <b>{{ events.date_event }}</b></span>
+        &nbsp;
+        <br>
+        <span class="detail-address">Adresse : <b>{{ events.address }}</b></span>
         <span class="detail-creater">{{ events.username }}</span>
     </div>
     <div class="container-onevent">
@@ -22,30 +25,28 @@
                     </div>
                     <div class="part-bot">
                         <span class="part-state">{{ participant.participants.tel_number }}</span>
-                    </div>  
+                    </div>
                 </div>
             </div>
             <div class="partage">
                 <h3>Lien de partage :</h3>
-                <a :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{ events.shared_url }}</a>
+                <a :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{
+                    events.shared_url }}</a>
             </div>
         </div>
         <div style="height:750px; width:1050px" class="mapLeaflet">
             <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[this.lat, this.long]">
-            <l-tile-layer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                layer-type="base"
-                name="OpenStreetMap"
-            ></l-tile-layer>
-            <l-marker :lat-lng="[this.lat, this.long]">
-                <l-popup style="text-align: center;">
-                    <h2>{{ events.title }}</h2>
-                    <span><i>{{ events.date_event.substring(0,10) }}</i></span>
-                    <p>{{ events.address }}</p>
-                </l-popup>
-            </l-marker>
+                <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
+                    name="OpenStreetMap"></l-tile-layer>
+                <l-marker :lat-lng="[this.lat, this.long]">
+                    <l-popup style="text-align: center;">
+                        <h2>{{ events.title }}</h2>
+                        <span><i>{{ events.date_event.substring(0, 10) }}</i></span>
+                        <p>{{ events.address }}</p>
+                    </l-popup>
+                </l-marker>
             </l-map>
-        </div>   
+        </div>
     </div>
 
     <div class="commentaires">
@@ -97,7 +98,7 @@ export default {
             username: '',
             address: '',
             zoom: 15,
-            apiKey:'262e66a1a59d85f290a21363615184fa',
+            apiKey: '262e66a1a59d85f290a21363615184fa',
             lat: '45',
             long: '1',
         }
@@ -257,32 +258,28 @@ export default {
                     console.log(error);
                 });
         },
-        goToSharedURL(id) {
+        /* goToSharedURL(id) {
             this.$router.push(`/shared/${id}`)
-        },
+        }, */
         setMarker() {
             console.log(this.events.address)
             axios.get(`http://api.positionstack.com/v1/forward?access_key=${this.apiKey}&query=${this.events.address}`)
                 .then((response) => {
-                  console.log(this.events.address)
-                  console.log(response.data.data)
-                  this.lat=response.data.data[0].latitude
-                  this.long=response.data.data[0].longitude
+                    console.log(this.events.address)
+                    console.log(response.data.data)
+                    this.lat = response.data.data[0].latitude
+                    this.long = response.data.data[0].longitude
                 })
                 .catch((error) => {
-                  console.log(error)
+                    console.log(error)
                 })
         },
-        todayDate() {
-            console.log(Date())
-        }
 
     },
     mounted() {
         this.getEvents()
         this.getComs()
         this.getParticipants()
-        this.todayDate()
     },
     computed: {
         substringDate() {
@@ -319,8 +316,8 @@ th {
 
 .detail-event h1 {
     border: 1px solid black;
-    color:#f2f2f2;
-    padding:15px;
+    color: #f2f2f2;
+    padding: 15px;
     font-size: 1.6em;
     background-color: rgb(67, 67, 216);
 }
@@ -341,8 +338,8 @@ th {
 
 .left-container h1 {
     border: 1px solid black;
-    color:#f2f2f2;
-    padding:15px;
+    color: #f2f2f2;
+    padding: 15px;
     font-size: 1.6em;
     background-color: rgb(67, 67, 216);
 }
@@ -357,7 +354,8 @@ th {
     margin: 15px;
 }
 
-.part-name, .part-firstname {
+.part-name,
+.part-firstname {
     margin-right: 5px;
     margin-bottom: 5px;
 }
@@ -373,7 +371,8 @@ th {
 .part-bot {
     margin-top: 5px;
 }
-.partage{
+
+.partage {
     float: bottom;
     text-align: center;
     margin-bottom: 5%;
@@ -406,8 +405,8 @@ th {
 
 .commentaires h1 {
     border: 1px solid black;
-    color:#f2f2f2;
-    padding:15px;
+    color: #f2f2f2;
+    padding: 15px;
     font-size: 1.6em;
     background-color: rgb(67, 67, 216);
 }

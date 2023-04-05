@@ -21,9 +21,9 @@
             <div v-if="telephoneError" class="error-message">{{ telephoneError }}</div>
         </label>
         <label>
-            Adresse:
-            <input type="text" id="address" name="address" v-model="address" required>
-            <div v-if="addressError" class="error-message">{{ addressError }}</div>
+            commentaire:
+            <input type="text" id="comment" name="comment" v-model="comment" required>
+            <div v-if="commentError" class="error-message">{{ commentError }}</div>
         </label>
         <label>
             Présence:
@@ -38,7 +38,6 @@
         <button type="submit">Enregistrer</button>
         <p v-if="error">{{ error }}</p>
     </form>
-
 </template>
 
 <script>
@@ -52,15 +51,15 @@ export default {
             nom: '',
             prenom: '',
             telephone: '',
-            address: '',
+            comment: '',
             selected: '',
             nomError: '',
             prenomError: '',
             telephoneError: '',
-            addressError: '',
+            commentError: '',
             presenceError: '',
             error: '',
-            id_event:'',
+            id_event: '',
             shared_url: this.$route.params.id
         }
     },
@@ -69,39 +68,39 @@ export default {
             this.nomError = this.validatenom(this.nom)
             this.prenomError = this.validateprenom(this.prenom)
             this.telephoneError = this.validatetelephone(this.telephone)
-            this.addressError = this.validateaddress(this.address)
+            this.commentError = this.validatecomment(this.comment)
             this.presenceError = this.validatepresence(this.selected)
 
             // Vérifications de sécurité
-            if (this.nomError || this.prenomError || this.telephoneError || this.addressError || this.presenceError) {
+            if (this.nomError || this.prenomError || this.telephoneError || this.commentError || this.presenceError) {
                 return
             }
 
             axios.get("http://localhost:19100/events/shared/" + this.shared_url).then(
                 (response) => {
                     axios.post("http://localhost:19100/participants/create", {
-                    name: this.nom,
-                    firstname: this.prenom,
-                    tel_number: this.telephone,
-                    state: this.selected,
-                    id_event: response.data.id_event,
-                }).then(
-                (response) => {
-                    if (response.status === 201) {
-                        this.$router.push('/homePage')
-                    }
-                },
-                (error) => {
-                    this.error = error.response.data.message
-                }
-            )
+                        name: this.nom,
+                        firstname: this.prenom,
+                        tel_number: this.telephone,
+                        state: this.selected,
+                        id_event: response.data.id_event,
+                    }).then(
+                        (response) => {
+                            if (response.status === 201) {
+                                this.$router.push('/homePage')
+                            }
+                        },
+                        (error) => {
+                            this.error = error.response.data.message
+                        }
+                    )
                 },
                 (error) => {
                     this.error = error.response.data.message
                 }
             )
 
-            
+
         },
         validatenom(nom) {
             if (nom.length < 3) {
@@ -121,8 +120,8 @@ export default {
             }
             return ''
         },
-        validateaddress(address) {
-            if (address.length < 3) {
+        validatecomment(comment) {
+            if (comment.length < 3) {
                 return 'L\'adresse doit contenir au moins 3 caractères'
             }
             return ''

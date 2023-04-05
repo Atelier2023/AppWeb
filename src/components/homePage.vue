@@ -1,8 +1,9 @@
 <template>
     <nav class="nav-event">
-        <router-link to="/homePage" class="onPage">Mes événements</router-link>
-        <button v-if="this.$store.state.authenticated" @click="createEvent" class="createEventButton">Créer un évenement</button>
-        
+        <router-link to="/homePage" v-if="this.$store.state.authenticated" class="onPage">Mes événements</router-link>
+        <button v-if="this.$store.state.authenticated" @click="createEvent" class="createEventButton">Créer un
+            évenement</button>
+
     </nav>
 
     <div class="container-homepage">
@@ -23,7 +24,7 @@
                     <tbody>
                         <tr>
                             <td style="border: 1px solid black; padding: 5px;">{{ event.title }}</td>
-                            <td style="border: 1px solid black; padding: 5px;">{{ event.date_event.substring(0,10) }}</td>
+                            <td style="border: 1px solid black; padding: 5px;">{{ event.date_event.substring(0, 10) }}</td>
                             <td style="border: 1px solid black; padding: 5px;">{{ event.address }}</td>
                             <td style="border: 1px solid black; padding: 5px;">{{ event.state }}</td>
                             <td style="border: 1px solid black; padding: 5px;">{{ event.username }}</td>
@@ -153,57 +154,61 @@ export default {
 </script>
 
 <style>
-    .nav-event {
-        display: flex;
-        background-color: #D7D7D7;
-    }
+.nav-event {
+    display: flex;
+    background-color: #D7D7D7;
+}
 
-    .nav-event a {
-        text-decoration: none;
-        color: #242429;
-    }
+.nav-event a {
+    text-decoration: none;
+    color: #242429;
+}
 
-    .nav-event a:hover {
-        border-bottom: #242429 solid 2px;
-    }
-    .onPage {
-        border-bottom: #242429 solid 2px;
-    }
-    .createEventButton {
-        color: #242429;
-        font-family: Avenir, Helvetica, Arial, sans-serif;
-        border: none;
-        font-size: 1em;
-        margin: 0;
-    }
-    .createEventButton:hover {
-        color: #242429;
-        font-family: Avenir, Helvetica, Arial, sans-serif;
-        border: none;
-        font-size: 1em;
-        margin: 0;
-        cursor: pointer;
-        border-bottom: #242429 solid 2px;
-    }
-    .container-homepage {
-        display: flex;
-        height: 700px;
-    }
-    .allEvents {
-        margin: 25px ;
-        padding-right: 15px;
-        max-height: 750px;
-        overflow: auto;
-        width:45%
-    }
-    .allEvents h2 {
-        margin-bottom: 25px;
-        text-align: center;
-    }
-    .mapLeaflet {
-        width: 70%;
-        margin-top:25px;
-    }
+.nav-event a:hover {
+    border-bottom: #242429 solid 2px;
+}
 
-    
-</style>
+.onPage {
+    border-bottom: #242429 solid 2px;
+}
+
+.createEventButton {
+    color: #242429;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    border: none;
+    font-size: 1em;
+    margin: 0;
+}
+
+.createEventButton:hover {
+    color: #242429;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    border: none;
+    font-size: 1em;
+    margin: 0;
+    cursor: pointer;
+    border-bottom: #242429 solid 2px;
+}
+
+.container-homepage {
+    display: flex;
+    height: 700px;
+}
+
+.allEvents {
+    margin: 25px;
+    padding-right: 15px;
+    max-height: 750px;
+    overflow: auto;
+    width: 45%
+}
+
+.allEvents h2 {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.mapLeaflet {
+    width: 70%;
+    margin-top: 25px;
+}</style>
