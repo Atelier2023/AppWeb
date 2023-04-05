@@ -1,7 +1,13 @@
 <template>
-    <h1>Formulaire d'inscription à l'événement</h1>
+    <nav class="nav-event">
+        <router-link to="/homePage">Mes événements</router-link>
+        <button v-if="this.$store.state.authenticated" @click="createEvent" class="onPage createEventButton">Créer un
+            évenement</button>
+    </nav>
     <div class="detail-event">
         <h1>{{ events.title }}</h1>
+        {{ this.$route.params.id }}
+
         <div class="detail-event-info">
             <span class="detail-date">Date de l'évenement : <b>{{ this.getDate() }}</b></span>
             <br>
@@ -9,46 +15,13 @@
             <span class="detail-creater">{{ events.username }}</span>
         </div>
     </div>
-    <form @submit.prevent="submitForm">
-        <label>
-            Nom:
-            <input type="text" id="nom" name="nom" v-model="nom" required>
-            <div v-if="nomError" class="error-message">{{ nomError }}</div>
-
-        </label>
-        <label>
-            Prénom:
-            <input type="text" id="prenom" name="prenom" v-model="prenom" required>
-            <div v-if="prenomError" class="error-message">{{ prenomError }}</div>
-
-        </label>
-        <label>
-            Numéro Tel:
-            <input type="text" id="telephone" name="telephone" v-model="telephone" required>
-            <div v-if="telephoneError" class="error-message">{{ telephoneError }}</div>
-        </label>
-        <label>
-            commentaire:
-            <input type="text" id="comment" name="comment" v-model="comment" required>
-            <div v-if="commentError" class="error-message">{{ commentError }}</div>
-        </label>
-        <label>
-            Présence:
-            <select name="presence" id="presence" v-model="selected">
-                <option disabled value="" selected>Selectionnez une option</option>
-                <option>present</option>
-                <option>missing</option>
-            </select>
-            <div v-if="presenceError" class="error-message">{{ presenceError }}</div>
-        </label>
-        <button type="submit">Enregistrer</button>
-        <p v-if="error">{{ error }}</p>
-    </form>
-    <label id="urlperso">{{ urlperso }}</label>
     <div class="container-onevent">
         <div class="left-container">
             <h1>Participants</h1>
-            <div class="participants">
+            <div class="no-participant" v-if="participants.length === 0">
+                Aucun participant à l'événement
+            </div>
+            <div class="participants" v-else>
                 <div v-for="(participant, index) in participants" :key="participant.id" class="participant">
                     <div class="part-top">
                         <span class="part-name">{{ participant.participants.name }}</span>
@@ -62,106 +35,117 @@
                     </div>
                 </div>
             </div>
+
+        </div>
+        <div style="height:750px; width:1050px; margin-right: 15px;;" class="mapLeaflet">
+            <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[this.lat, this.long]">
+                <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
+                    name="OpenStreetMap"></l-tile-layer>
+                <l-marker ref="marker" :lat-lng="[this.lat, this.long]">
+                    <l-popup style="text-align: center;">
+                        <h2>{{ events.title }}</h2>
+                        <span><i>{{ events.date_event.substring(0, 10) }}</i></span>
+                        <p>{{ events.address }}</p>
+                    </l-popup>
+                </l-marker>
+            </l-map>
         </div>
     </div>
+
+    <div class="commentaires">
+
+        <h1>Commentaires</h1>
+        <div class="no-participant" v-if="coms.length === 0">
+            Aucun commentaire n'a été posté pour l'instant
+        </div>
+        <div v-else>
+            <div v-for="(commentaire, index) in coms" :key="commentaire.id" class="commentaire">
+                <span class="com-user">{{ commentaire.username[0].firstname }}</span><br>
+                <span class="com-date"><i>{{ commentaire.date.substring(0, 10) }}</i></span><br>
+                <span class="com-com">{{ commentaire.commentaire }}</span>
+            </div>
+        </div>
+
+        <div class="form-com">
+            <form @submit.prevent="addCom">
+                <div>
+                    <textarea name="com" id="com" v-model="com" cols="205" rows="10" required></textarea>
+                </div>
+                <button type="submit" class="buttonLog">Publier</button>
+            </form>
+        </div>
+
+    </div>
+
+
+    <router-view></router-view>
 </template>
 
 <script>
 import axios from "axios";
+import "leaflet/dist/leaflet.css";
+import { LMap, LTileLayer, LPopup, LMarker } from "@vue-leaflet/vue-leaflet";
+
 
 export default {
     name: 'homePage',
-    components: {},
+    components: {
+        LMap,
+        LTileLayer,
+        LPopup,
+        LMarker
+    },
     data() {
         return {
-            nom: '',
-            prenom: '',
-            telephone: '',
-            comment: '',
-            selected: '',
-            nomError: '',
-            prenomError: '',
-            telephoneError: '',
-            commentError: '',
-            presenceError: '',
-            error: '',
-            id_event: '',
-            shared_url: this.$route.params.id,
             events: '',
+            user: '',
+            com: '',
+            coms: '',
             participants: '',
-            urlperso: '',
+            username: '',
+            address: '',
+            zoom: 15,
+            apiKey: '262e66a1a59d85f290a21363615184fa',
+            lat: '45',
+            long: '1',
         }
     },
     methods: {
-        submitForm() {
-            this.nomError = this.validatenom(this.nom)
-            this.prenomError = this.validateprenom(this.prenom)
-            this.telephoneError = this.validatetelephone(this.telephone)
-            this.commentError = this.validatecomment(this.comment)
-            this.presenceError = this.validatepresence(this.selected)
-
-            // Vérifications de sécurité
-            if (this.nomError || this.prenomError || this.telephoneError || this.commentError || this.presenceError) {
-                return
-            }
-
-            axios.get("http://localhost:19100/events/shared/" + this.shared_url).then(
+        createEvent() {
+            axios.get('http://localhost:19102/users/validate', {
+                headers: {
+                    Authorization: `Bearer ${this.$store.state.token}`
+                }
+            }).then(
                 (response) => {
-                    axios.post("http://localhost:19100/participants/create", {
-                        name: this.nom,
-                        firstname: this.prenom,
-                        tel_number: this.telephone,
-                        state: this.selected,
-                        comment: this.comment,
-                        id_event: response.data.id_event,
-                    }).then(
-                        (response) => {
-                            if (response.status === 201) {
-                                this.getParticipants();
-                                this.urlperso = 'salut'
-                            }
-                        },
-                        (error) => {
-                            this.error = error.response.data.message
-                        }
-                    )
+                    if (response.status === 200) {
+                        this.$router.push('/createEvent')
+                    }
                 },
                 (error) => {
-                    this.error = error.response.data.message
+                    if (error.response.status === 401) {
+                        axios.get(`http://localhost:19102/users/getRefresh/${this.$store.state.id}`, {
+                        }).then(
+                            (response) => {
+                                const refresh_token = response.data[0].refresh_token;
+                                axios.post('http://localhost:19102/users/refresh', {}, {
+                                    headers: {
+                                        Authorization: `Bearer ${refresh_token}`
+                                    }
+                                })
+                                    .then(response => {
+                                        console.log(response)
+                                        this.$store.state.token = response.data.accesstoken;
+                                        this.$router.push('/createEvent')
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    });
+                            });
+                    }
+                    this.error = "Une erreur est survenue lors de la connexion";
                 }
-            )
-
-
-        },
-        validatenom(nom) {
-            if (nom.length < 3) {
-                return 'Le nom doit contenir au moins 3 caractères'
-            }
-            return ''
-        },
-        validateprenom(prenom) {
-            if (prenom.length < 3) {
-                return 'Le prénom doit contenir au moins 3 caractères'
-            }
-            return ''
-        },
-        validatetelephone(telephone) {
-            if (telephone.length < 10) {
-                return 'Le numéro de téléphone doit contenir au moins 10 caractères'
-            }
-            return ''
-        },
-        validatecomment(comment) {
-            if (comment.length < 3) {
-                return 'L\'adresse doit contenir au moins 3 caractères'
-            }
-            return ''
-        },
-        validatepresence(selected) {
-            if (selected.length < 1) {
-                return 'Vous devez selectionner une option'
-            }
-            return ''
+            );
         },
         getEvents() {
             axios.get(`http://localhost:19100/events/${this.$route.params.id_event}`)
@@ -170,16 +154,107 @@ export default {
                     this.events = response.data;
                     this.address = response.data.address;
                     console.log(this.events)
-                    //this.setMarker();
+                    this.setMarker();
 
                 })
                 .catch(error => {
                     console.log(error);
                 });
         },
-        getDate() {
-            const date = new Date(this.events.date_event);
-            return date.toLocaleDateString("fr");
+
+        getComs() {
+            axios.get(`http://localhost:19100/commentaires/${this.$route.params.id_event}`)
+                .then(response => {
+                    this.coms = response.data.comments;
+                    this.coms.forEach(com => {
+                        axios.get(`http://localhost:19102/users/getUser/${com.id_user}`)
+                            .then(response => {
+                                com.username = response.data;
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        addCom() {
+            axios.get('http://localhost:19102/users/validate', {
+                headers: {
+                    Authorization: `Bearer ${this.$store.state.token}`
+                }
+            }).then(
+                (response) => {
+                    console.log(response)
+                    if (response.status === 200) {
+                        const current = new Date();
+                        const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
+                        axios.post("http://localhost:19100/commentaires/create", {
+                            commentaire: this.com,
+                            id_user: this.$store.state.id,
+                            id_event: this.$route.params.id,
+                            date: date
+                        }).then(
+                            (response) => {
+                                if (response.status === 201) {
+                                    this.getComs()
+                                    this.com = ''
+                                    this.$router.push(`/oneEvent/${this.$route.params.id}`)
+                                }
+                                console.log(response);
+                            },
+                            (error) => {
+                                console.log(error);
+                            }
+                        );
+                    }
+                },
+                (error) => {
+                    if (error.response.status === 401) {
+                        axios.get(`http://localhost:19102/users/getRefresh/${this.$store.state.id}`, {
+                        }).then(
+                            (response) => {
+                                const refresh_token = response.data[0].refresh_token;
+                                axios.post('http://localhost:19102/users/refresh', {}, {
+                                    headers: {
+                                        Authorization: `Bearer ${refresh_token}`
+                                    }
+                                })
+                                    .then(response => {
+                                        console.log(response)
+                                        this.$store.state.token = response.data.accesstoken;
+                                        const current = new Date();
+                                        const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
+                                        axios.post("http://localhost:19100/commentaires/create", {
+                                            commentaire: this.com,
+                                            id_user: this.$store.state.id,
+                                            id_event: this.$route.params.id,
+                                            date: date
+                                        }).then(
+                                            (response) => {
+                                                if (response.status === 201) {
+                                                    this.getComs()
+                                                    this.com = ''
+                                                    this.$router.push(`/oneEvent/${this.$route.params.id}`)
+                                                }
+                                                console.log(response);
+                                            },
+                                            (error) => {
+                                                console.log(error);
+                                                this.error = true;
+                                            }
+                                        );
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    });
+                            });
+                    }
+                    this.error = "Une erreur est survenue lors de la connexion";
+                }
+            );
         },
         getParticipants() {
             axios.get(`http://localhost:19100/participants/getParticipants/${this.$route.params.id_event}`)
@@ -187,17 +262,198 @@ export default {
                     console.log(response)
                     this.participants = response.data.participants;
                     console.log(this.participants)
+                    this.$refs.marker.leafletObject.openPopup()
                 })
                 .catch(error => {
                     console.log(error);
                 });
         },
+        /* goToSharedURL(id) {
+            this.$router.push(`/shared/${id}`)
+        }, */
+        setMarker() {
+            console.log(this.events.address)
+            //axios.get(`http://api.positionstack.com/v1/forward?access_key=${this.apiKey}&query=${this.events.address}`)
+            axios.get(`https://nominatim.openstreetmap.org/search.php?q=${this.events.address}&format=jsonv2`)
+                .then((response) => {
+                    console.log(this.events.address)
+                    console.log((response.data[0].lat + " " + response.data[0].lon))
+                    this.lat = response.data[0].lat;
+                    this.long = response.data[0].lon;
+                    this.$refs.marker.leafletObject.openPopup()
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
+        getDate() {
+            const date = new Date(this.events.date_event);
+            return date.toLocaleDateString("fr");
+        },
+        copy() {
+            let text = document.getElementById('partage-link');
+            navigator.clipboard.writeText(text)
+        }
+
     },
     mounted() {
         this.getEvents()
+        this.getComs()
         this.getParticipants()
-
     },
+    computed: {
+        substringDate() {
+            return this.events.date_event.substring(0, 10)
+        },
+    }
 }
 </script>
+
+<style>
+table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+th,
+td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.detail-event {
+    margin: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.detail-event h1 {
+    border: 1px solid black;
+    color: #f2f2f2;
+    padding: 15px;
+    font-size: 1.6em;
+    background-color: rgb(67, 67, 216);
+}
+
+.detail-event-info {
+    padding: 30px;
+}
+
+.container-onevent {
+    display: flex;
+    margin-top: 50px;
+}
+
+.left-container {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.left-container h1 {
+    border: 1px solid black;
+    color: #f2f2f2;
+    padding: 15px;
+    font-size: 1.6em;
+    background-color: rgb(67, 67, 216);
+}
+
+.participants {
+    margin: 15px;
+}
+
+.participant {
+    border-bottom: 1px solid black;
+    padding: 5px 0 5px 0;
+    margin: 15px;
+}
+
+.part-name,
+.part-firstname {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.part-tel {
+    float: right
+}
+
+.part-state {
+    margin-bottom: 10px;
+}
+
+.part-bot {
+    margin-top: 5px;
+}
+
+.partage {
+    float: bottom;
+    text-align: center;
+    margin-bottom: 5%;
+}
+
+.commentaires {
+    margin: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.commentaire {
+    border-bottom: 1px solid black;
+    padding: 5px 0 5px 0;
+    margin: 25px;
+}
+
+.com-user {
+    font-size: 1.6em;
+    font-weight: 600;
+}
+
+.com-date {
+    font-size: 0.9em;
+}
+
+.com-com {
+    font-size: 1.2em;
+}
+
+.commentaires h1 {
+    border: 1px solid black;
+    color: #f2f2f2;
+    padding: 15px;
+    font-size: 1.6em;
+    background-color: rgb(67, 67, 216);
+}
+
+.commentaires form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid #838383;
+}
+
+.no-participant {
+    margin: 15px auto;
+    font-size: 1.4em;
+    text-align: center
+}
+</style>
+
 

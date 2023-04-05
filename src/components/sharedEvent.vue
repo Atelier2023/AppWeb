@@ -28,6 +28,11 @@
             <div v-if="telephoneError" class="error-message">{{ telephoneError }}</div>
         </label>
         <label>
+            Email:
+            <input type="text" id="email" name="email" v-model="email" required>
+            <div v-if="emailError" class="error-message">{{ emailError }}</div>
+        </label>
+        <label>
             commentaire:
             <input type="text" id="comment" name="comment" v-model="comment" required>
             <div v-if="commentError" class="error-message">{{ commentError }}</div>
@@ -80,16 +85,19 @@ export default {
             comment: '',
             selected: '',
             nomError: '',
+            email: '',
             prenomError: '',
             telephoneError: '',
             commentError: '',
             presenceError: '',
+            emailError: '',
             error: '',
             id_event: '',
             shared_url: this.$route.params.id,
             events: '',
             participants: '',
             urlperso: '',
+            id_participant: '',
         }
     },
     methods: {
@@ -99,9 +107,11 @@ export default {
             this.telephoneError = this.validatetelephone(this.telephone)
             this.commentError = this.validatecomment(this.comment)
             this.presenceError = this.validatepresence(this.selected)
+            this.emailError = this.validatepresence(this.email)
+
 
             // Vérifications de sécurité
-            if (this.nomError || this.prenomError || this.telephoneError || this.commentError || this.presenceError) {
+            if (this.nomError || this.prenomError || this.telephoneError || this.commentError || this.presenceError || this.emailError) {
                 return
             }
 
@@ -113,14 +123,29 @@ export default {
                         tel_number: this.telephone,
                         state: this.selected,
                         comment: this.comment,
+                        email: this.email,
                         id_event: response.data.id_event,
                     }).then(
                         (response) => {
                             if (response.status === 201) {
                                 this.getParticipants();
+                                axios.post("http://localhost:19100/participants/idparticipant", {
+                                    email: this.email,
+                                    id_event: this.$route.params.id_event
+                                }).then(
+                                    (response) => {
+                                        if (response.status === 200) {
+                                            console.log(response.data[0].id_participant)
+                                            // this.id_participant = response.data[0].id_participant
+                                            this.urlperso = `http://localhost:5173/shared/${this.$route.params.id}/${this.$route.params.id_event}/${response.data[0].id_participant}`
 
-
-                                this.urlperso = `http://localhost:5173/shared/${this.$route.params.id}/${this.$route.params.id_event}`
+                                        }
+                                    },
+                                    (error) => {
+                                        console.log(error);
+                                        this.error = true;
+                                    }
+                                );
                             }
                         },
                         (error) => {
@@ -168,11 +193,8 @@ export default {
         getEvents() {
             axios.get(`http://localhost:19100/events/${this.$route.params.id_event}`)
                 .then(response => {
-                    console.log(response.data)
                     this.events = response.data;
                     this.address = response.data.address;
-                    console.log(this.events)
-                    //this.setMarker();
 
                 })
                 .catch(error => {
@@ -186,9 +208,7 @@ export default {
         getParticipants() {
             axios.get(`http://localhost:19100/participants/getParticipants/${this.$route.params.id_event}`)
                 .then(response => {
-                    console.log(response)
                     this.participants = response.data.participants;
-                    console.log(this.participants)
                 })
                 .catch(error => {
                     console.log(error);
