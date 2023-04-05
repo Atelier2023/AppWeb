@@ -28,6 +28,19 @@
                 </div>
             </div>
         </div>
+        <div style="height:750px; width:1050px; margin-right: 15px;;" class="mapLeaflet">
+            <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[this.lat, this.long]">
+                <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
+                    name="OpenStreetMap"></l-tile-layer>
+                <l-marker ref="markerShared" :lat-lng="[this.lat, this.long]">
+                    <l-popup style="text-align: center;">
+                        <h2>{{ events.title }}</h2>
+                        <span><i>{{ events.date_event.substring(0, 10) }}</i></span>
+                        <p>{{ events.address }}</p>
+                    </l-popup>
+                </l-marker>
+            </l-map>
+        </div>
     </div>
 
     <div class="commentaires">
@@ -58,10 +71,17 @@
 
 <script>
 import axios from "axios";
+import "leaflet/dist/leaflet.css";
+import { LMap, LTileLayer, LPopup, LMarker } from "@vue-leaflet/vue-leaflet";
 
 export default {
     name: 'homePage',
-    components: {},
+    components: {
+        LMap,
+        LTileLayer,
+        LPopup,
+        LMarker
+    },
     data() {
         return {
             nom: '',
@@ -83,6 +103,9 @@ export default {
             participants: '',
             urlperso: '',
             id_participant: '',
+            lat: '',
+            long: '',
+            zoom: 15,
         }
     },
     methods: {
@@ -93,7 +116,7 @@ export default {
                 .then(response => {
                     this.events = response.data;
                     this.address = response.data.address;
-
+                    this.setMarker();
                 })
                 .catch(error => {
                     console.log(error);
@@ -111,6 +134,20 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        setMarker() {
+            console.log(this.events)
+            axios.get(`https://nominatim.openstreetmap.org/search.php?q=${this.events.address}&format=jsonv2`)
+                .then((response) => {
+                    console.log(this.events.address)
+                    console.log((response.data[0].lat + " " + response.data[0].lon))
+                    this.lat = response.data[0].lat;
+                    this.long = response.data[0].lon;
+                    this.$refs.markerShared.leafletObject.openPopup()
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         },
     },
     mounted() {
