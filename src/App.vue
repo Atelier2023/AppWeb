@@ -21,8 +21,6 @@
     </div>
   </nav>
 
-  
-  
   <router-view></router-view>
 </template>
 
@@ -119,5 +117,26 @@ nav a {
 
 body {
   background-color: #D7D7D7;
+}
+
+.start {
+  text-align: center;
+  padding: 25px;
+  margin-top: 15%;
+  background-color: #D7D7D7;
+  font-size: 1.5em;
+  height: 250px;
+}
+
+.start a {
+  background-color: rgb(112, 112, 201);
+  color: #D7D7D7;
+  text-decoration: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+}
+
+.start a:hover {
+  background-color: rgb(67, 67, 216);
 }
 </style>
