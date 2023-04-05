@@ -140,14 +140,14 @@ export default {
 
             const current = new Date();
             const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
-            axios.post("http://localhost:19100/commentaires/create", {
+            axios.post("http://localhost:19106/commentaires/create", {
                 commentaire: this.com,
                 id_user: this.$route.params.id_participant,
                 id_event: this.$route.params.id_event,
                 date: date
             }).then(
                 (response) => {
-                    if (response.status === 201) {
+                    if (response.status === 200) {
                         this.getComs()
                         this.com = ''
                     }
@@ -159,7 +159,7 @@ export default {
             );
         },
         getComs() {
-            axios.get(`http://localhost:19100/commentaires/${this.$route.params.id_event}`)
+            axios.get(`http://localhost:19106/commentaires/${this.$route.params.id_event}`)
                 .then(response => {
                     this.coms = response.data.comments;
                     this.coms.forEach(com => {
