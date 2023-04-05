@@ -1,9 +1,12 @@
+API 
+docker compose up
 
+
+AppWeb
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
 
 ```sh
 npm run dev
