@@ -128,7 +128,6 @@ form div {
 }
 
 .buttonLog {
-    background-color: #F0F2F5;
     border: 1px solid #F0F2F5;
     border-radius: 5px;
     color: #000000;

@@ -30,7 +30,7 @@
                 <p v-if="error">{{ error }}</p>
             </form>
         </div>
-        <l-map ref="map" @ready="getAddress" :use-global-leaflet="false" v-model:zoom="zoom"
+        <l-map ref="map" style="margin-right: 50px; height:600px" @ready="getAddress" :use-global-leaflet="false" v-model:zoom="zoom"
             :center="[48.691673232896015, 6.182424175083767]">
             <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
                 name="OpenStreetMap"></l-tile-layer>
@@ -157,14 +157,18 @@ export default {
 .container-createpage {
     display: flex;
     height: 700px;
+    margin-top: 50px;
 }
 
 .createEvent {
-    margin: 25px;
+    margin: 75px 100px 25px 50px;
     padding-right: 15px;
-    max-height: 750px;
+    height: 60%;
     overflow: auto;
-    width: 45%
+    width: 30%;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 
 .createEvent form {
@@ -173,6 +177,7 @@ export default {
 
 .createEvent h2 {
     margin-bottom: 25px;
+    margin-top: 25px;
     text-align: center;
 }
 

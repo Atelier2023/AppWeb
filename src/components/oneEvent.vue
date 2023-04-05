@@ -39,7 +39,7 @@
             <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[this.lat, this.long]">
                 <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
                     name="OpenStreetMap"></l-tile-layer>
-                <l-marker :lat-lng="[this.lat, this.long]">
+                <l-marker ref="marker" :lat-lng="[this.lat, this.long]">
                     <l-popup style="text-align: center;">
                         <h2>{{ events.title }}</h2>
                         <span><i>{{ events.date_event.substring(0, 10) }}</i></span>
@@ -254,6 +254,7 @@ export default {
                     console.log(response)
                     this.participants = response.data.participants;
                     console.log(this.participants)
+                    this.$refs.marker.leafletObject.openPopup()
                 })
                 .catch(error => {
                     console.log(error);
@@ -271,6 +272,7 @@ export default {
                     console.log((response.data[0].lat + " " + response.data[0].lon))
                     this.lat = response.data[0].lat;
                     this.long = response.data[0].lon;
+                    this.$refs.marker.leafletObject.openPopup()
                 })
                 .catch((error) => {
                     console.log(error)
