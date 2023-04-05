@@ -29,22 +29,25 @@
                 <p v-if="error">{{ error }}</p>
             </form>
         </div>
-        <div style="height:600px; width:800px" class="mapLeaflet">
-            <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
-            <l-tile-layer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                layer-type="base"
-                name="OpenStreetMap"
-            ></l-tile-layer>
-            </l-map>
-        </div>
+        <l-map ref="map" @ready="getAddress" :use-global-leaflet="false" v-model:zoom="zoom" :center="[48.691673232896015, 6.182424175083767]">
+        <l-tile-layer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            layer-type="base"
+            name="OpenStreetMap"
+        ></l-tile-layer>
+        <l-marker ref="marker" :lat-lng="[this.lat, this.long]">
+            <l-popup>
+                <span>{{ this.adressPopup }}</span>
+            </l-popup>
+        </l-marker>
+        </l-map>
     </div>
 
 </template>
 <script>
 import axios from "axios";
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
 
 
 export default {
@@ -52,6 +55,8 @@ export default {
     components: {
         LMap,
         LTileLayer,
+        LMarker,
+        LPopup
     },
 
     data() {
@@ -63,10 +68,29 @@ export default {
             adressError: '',
             dateError: '',
             error: '',
-            zoom: 13,
+            zoom: 14,
+            apiKey:'262e66a1a59d85f290a21363615184fa',
+            adressPopup:'',
+            lat:'',
+            long:''
         }
     },
     methods: {
+        getAddress(map) { // Onclick sur la map, récupère l'adresse et l'affiche dans le popup et dans le champ adresse
+            map.on('click', (e) => {
+                axios.get(`http://api.positionstack.com/v1/reverse?access_key=${this.apiKey}&query=${e.latlng.lat},${e.latlng.lng}`)
+                .then((response) => {
+                  this.adress = response.data.data[0].label
+                  this.adressPopup = response.data.data[0].label
+                  this.lat = response.data.data[0].latitude
+                  this.long = response.data.data[0].longitude
+                  this.$refs.marker.leafletObject.openPopup()
+                })
+                .catch((error) => {
+                  console.log(error)
+                })
+            })
+        },
         submitForm() {
             this.dateError = this.validatedate(this.date)
             this.titleError = this.validatetitle(this.title)
@@ -147,6 +171,9 @@ export default {
 
 .createEvent input:nth-child(n + 1) {
     margin-bottom: 25px;
-    width: 30%;
+    width: 50%;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 </style>
