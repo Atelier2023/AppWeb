@@ -91,7 +91,7 @@ export default {
   font-weight: bold;
   padding: 1rem;
   text-decoration: none;
-  color: #ebebeb;
+  color: #D7D7D7;
   padding-top: 25px;
   width: 25%;
 }
@@ -133,5 +133,9 @@ nav a {
 
 .global-nav a:hover {
   color: lightgrey;
+}
+
+body {
+  background-color: #D7D7D7;
 }
 </style>

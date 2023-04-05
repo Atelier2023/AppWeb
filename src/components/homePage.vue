@@ -155,7 +155,7 @@ export default {
 <style>
     .nav-event {
         display: flex;
-        background-color: #EEEEEE;
+        background-color: #D7D7D7;
     }
 
     .nav-event a {

@@ -5,6 +5,7 @@
         </div>
     </div>
 </template>
+<router-view></router-view>
 <script>
 
 export default {

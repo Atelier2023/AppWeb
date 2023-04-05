@@ -4,78 +4,69 @@
         <button v-if="this.$store.state.authenticated" @click="createEvent"  class="onPage createEventButton">Créer un évenement</button>
     </nav>
 
+    <div class="detail-event">
+        <h1>{{ events.title }}</h1>
+        <span class="detail-date">{{ events.date_event }}</span>
+        <span class="detail-address">{{ events.address }}</span>
+        <span class="detail-creater">{{ events.username }}</span>
+    </div>
     <div class="container-onevent">
-
         <div class="left-container">
-            <h1>Détails de l'événement : {{ events.title }}</h1>
-            <h3>Date : {{ events.date_event }}</h3>
-            <h3>Adresse : {{ events.address }}</h3>
-            <h3>Shared: {{ events.shared_url }}</h3>
-
-            <h1>Listes des participants :</h1>
-            <div v-for="(participant, index) in participants" :key="participant.id">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Prenom</th>
-                            <th>num</th>
-                            <th>status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ participant.participants.name }}</td>
-                            <td>{{ participant.participants.firstname }}</td>
-                            <td>{{ participant.participants.tel_number }}</td>
-                            <td>{{ participant.participants.state }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <h1>Participants</h1>
+            <div class="participants">
+                <div v-for="(participant, index) in participants" :key="participant.id" class="participant">
+                    <div class="part-top">
+                        <span class="part-name">{{ participant.participants.name }}</span>
+                        <span class="part-firstname">{{ participant.participants.firstname }}</span>
+                        <span class="part-tel">{{ participant.participants.state }}</span>
+                    </div>
+                    <div class="part-bot">
+                        <span class="part-state">{{ participant.participants.tel_number }}</span>
+                    </div>  
+                </div>
             </div>
-            <h2>Lien de partage :</h2>
-            <a :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{ events.shared_url }}</a>
+            <div class="partage">
+                <h3>Lien de partage :</h3>
+                <a :href="'http://localhost:5173/shared/' + events.shared_url">http://localhost:5173/shared/{{ events.shared_url }}</a>
+            </div>
         </div>
-        <div style="height:600px; width:800px" class="mapLeaflet">
-            <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
+        <div style="height:750px; width:1050px" class="mapLeaflet">
+            <l-map ref="map" :use-global-leaflet="false" v-model:zoom="zoom" :center="[this.lat, this.long]">
             <l-tile-layer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 layer-type="base"
                 name="OpenStreetMap"
             ></l-tile-layer>
+            <l-marker :lat-lng="[this.lat, this.long]">
+                <l-popup style="text-align: center;">
+                    <h2>{{ events.title }}</h2>
+                    <span><i>{{ events.date_event.substring(0,10) }}</i></span>
+                    <p>{{ events.address }}</p>
+                </l-popup>
+            </l-marker>
             </l-map>
         </div>   
     </div>
 
     <div class="commentaires">
-    <h1>Commentaires de l'évenement :</h1>
 
-    <div v-for="(commentaire, index) in coms" :key="commentaire.id">
-        <table>
-            <thead>
-                <tr>
-                    <th>Pseudo</th>
-                    <th>Commentaire</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ commentaire.username[0].firstname }}</td>
-                    <td>{{ commentaire.commentaire }}</td>
-                    <td>{{ commentaire.date.substring(0, 10) }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <h1>Commentaires</h1>
 
-    </div>
-    <form @submit.prevent="addCom">
-        <div>
-            <label for="com">Commentaires:</label><br>
-            <textarea name="com" id="com" v-model="com" cols="50" rows="5" required></textarea>
+        <div v-for="(commentaire, index) in coms" :key="commentaire.id" class="commentaire">
+            <span class="com-user">{{ commentaire.username[0].firstname }}</span><br>
+            <span class="com-date"><i>{{ commentaire.date.substring(0, 10) }}</i></span><br>
+            <span class="com-com">{{ commentaire.commentaire }}</span>
         </div>
-        <button type="submit">Ajouter un commentaires</button>
-    </form>
+
+        <div class="form-com">
+            <form @submit.prevent="addCom">
+                <div>
+                    <textarea name="com" id="com" v-model="com" cols="205" rows="10" required></textarea>
+                </div>
+                <button type="submit" class="buttonLog">Publier</button>
+            </form>
+        </div>
+
     </div>
 
 
@@ -85,7 +76,7 @@
 <script>
 import axios from "axios";
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LPopup, LMarker } from "@vue-leaflet/vue-leaflet";
 
 
 export default {
@@ -93,6 +84,8 @@ export default {
     components: {
         LMap,
         LTileLayer,
+        LPopup,
+        LMarker
     },
     data() {
         return {
@@ -102,7 +95,11 @@ export default {
             coms: '',
             participants: '',
             username: '',
-            zoom: 13,
+            address: '',
+            zoom: 15,
+            apiKey:'262e66a1a59d85f290a21363615184fa',
+            lat: '45',
+            long: '1',
         }
     },
     methods: {
@@ -145,10 +142,11 @@ export default {
         getEvents() {
             axios.get(`http://localhost:19100/events/${this.$route.params.id}`)
                 .then(response => {
-                    console.log(response)
+                    console.log(response.data)
                     this.events = response.data;
+                    this.address = response.data.address;
                     console.log(this.events)
-
+                    this.setMarker();
 
                 })
                 .catch(error => {
@@ -164,7 +162,6 @@ export default {
                         axios.get(`http://localhost:19102/users/getUser/${com.id_user}`)
                             .then(response => {
                                 com.username = response.data;
-                                console.log(this.coms)
                             })
                             .catch(error => {
                                 console.log(error);
@@ -263,12 +260,29 @@ export default {
         goToSharedURL(id) {
             this.$router.push(`/shared/${id}`)
         },
+        setMarker() {
+            console.log(this.events.address)
+            axios.get(`http://api.positionstack.com/v1/forward?access_key=${this.apiKey}&query=${this.events.address}`)
+                .then((response) => {
+                  console.log(this.events.address)
+                  console.log(response.data.data)
+                  this.lat=response.data.data[0].latitude
+                  this.long=response.data.data[0].longitude
+                })
+                .catch((error) => {
+                  console.log(error)
+                })
+        },
+        todayDate() {
+            console.log(Date())
+        }
 
     },
     mounted() {
         this.getEvents()
         this.getComs()
         this.getParticipants()
+        this.todayDate()
     },
     computed: {
         substringDate() {
@@ -297,10 +311,22 @@ th {
     background-color: #f2f2f2;
 }
 
+.detail-event {
+    margin: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.detail-event h1 {
+    border: 1px solid black;
+    color:#f2f2f2;
+    padding:15px;
+    font-size: 1.6em;
+    background-color: rgb(67, 67, 216);
+}
+
 .container-onevent {
     display: flex;
-    align-items: center;
-    justify-content: center;
     margin-top: 50px;
 }
 
@@ -308,18 +334,82 @@ th {
     width: 40%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    margin: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
-.left-container h1,h2 {
+.left-container h1 {
+    border: 1px solid black;
+    color:#f2f2f2;
+    padding:15px;
+    font-size: 1.6em;
+    background-color: rgb(67, 67, 216);
+}
+
+.participants {
+    margin: 15px;
+}
+
+.participant {
+    border-bottom: 1px solid black;
+    padding: 5px 0 5px 0;
+    margin: 15px;
+}
+
+.part-name, .part-firstname {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.part-tel {
+    float: right
+}
+
+.part-state {
+    margin-bottom: 10px;
+}
+
+.part-bot {
+    margin-top: 5px;
+}
+.partage{
+    float: bottom;
     text-align: center;
-    margin-top: 20px;
+    margin-bottom: 5%;
+}
+
+.commentaires {
+    margin: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.commentaire {
+    border-bottom: 1px solid black;
+    padding: 5px 0 5px 0;
+    margin: 25px;
+}
+
+.com-user {
+    font-size: 1.6em;
+    font-weight: 600;
+}
+
+.com-date {
+    font-size: 0.9em;
+}
+
+.com-com {
+    font-size: 1.2em;
 }
 
 .commentaires h1 {
-    text-align: center;
-    margin: 20px 0 20px 0;
+    border: 1px solid black;
+    color:#f2f2f2;
+    padding:15px;
+    font-size: 1.6em;
+    background-color: rgb(67, 67, 216);
 }
 
 .commentaires form {
@@ -327,6 +417,13 @@ th {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid #838383;
 }
 </style>
 

@@ -97,7 +97,7 @@ export default {
 <style>
 
     body {
-        background-color: #F0F2F5
+        background-color: #D7D7D7
     }
     .container-connexion {
         justify-content: center;
