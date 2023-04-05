@@ -1,5 +1,7 @@
 <template>
-    <h1>Formulaire d'inscription à l'événement</h1>
+    <nav class="nav-event">
+        <router-link to="/homePage" class="onPage">Formulaire</router-link>
+    </nav>
     <div class="detail-event">
         <h1>{{ events.title }}</h1>
         <div class="detail-event-info">
@@ -9,59 +11,60 @@
             <span class="detail-creater">{{ events.username }}</span>
         </div>
     </div>
-    <form @submit.prevent="submitForm">
-        <label>
-            Nom:
-            <input type="text" id="nom" name="nom" v-model="nom" required>
-            <div v-if="nomError" class="error-message">{{ nomError }}</div>
+    <div class="shared-container">
+        <form @submit.prevent="submitForm">
+            <h1>Formulaire</h1>
+            <label>
+                Nom: <br>
+                <input type="text" id="nom" name="nom" v-model="nom" required>
+                <div v-if="nomError" class="error-message">{{ nomError }}</div>
 
-        </label>
-        <label>
-            Prénom:
-            <input type="text" id="prenom" name="prenom" v-model="prenom" required>
-            <div v-if="prenomError" class="error-message">{{ prenomError }}</div>
+            </label><br>
+            <label>
+                Prénom:<br>
+                <input type="text" id="prenom" name="prenom" v-model="prenom" required>
+                <div v-if="prenomError" class="error-message">{{ prenomError }}</div>
 
-        </label>
-        <label>
-            Numéro Tel:
-            <input type="text" id="telephone" name="telephone" v-model="telephone" required>
-            <div v-if="telephoneError" class="error-message">{{ telephoneError }}</div>
-        </label>
-        <label>
-            commentaire:
-            <input type="text" id="comment" name="comment" v-model="comment" required>
-            <div v-if="commentError" class="error-message">{{ commentError }}</div>
-        </label>
-        <label>
-            Présence:
-            <select name="presence" id="presence" v-model="selected">
-                <option disabled value="" selected>Selectionnez une option</option>
-                <option>present</option>
-                <option>missing</option>
-            </select>
-            <div v-if="presenceError" class="error-message">{{ presenceError }}</div>
-        </label>
-        <button type="submit">Enregistrer</button>
-        <p v-if="error">{{ error }}</p>
-    </form>
-    <label id="urlperso">{{ urlperso }}</label>
-    <div class="container-onevent">
-        <div class="left-container">
-            <h1>Participants</h1>
-            <div class="participants">
-                <div v-for="(participant, index) in participants" :key="participant.id" class="participant">
-                    <div class="part-top">
-                        <span class="part-name">{{ participant.participants.name }}</span>
-                        <span class="part-firstname">{{ participant.participants.firstname }}</span>
-                        <span class="part-tel">{{ participant.participants.state }}</span>
-                    </div>
-                    <div class="part-bot">
-                        <span class="part-state">{{ participant.participants.tel_number }}</span>
-                        &nbsp; <br>
-                        <span class="part-state">{{ participant.participants.comment }}</span>
+            </label><br>
+            <label>
+                Numéro Tel:<br>
+                <input type="text" id="telephone" name="telephone" v-model="telephone" required>
+                <div v-if="telephoneError" class="error-message">{{ telephoneError }}</div>
+            </label><br>
+            <label>
+                commentaire:<br>
+                <input type="text" id="comment" name="comment" v-model="comment" required>
+                <div v-if="commentError" class="error-message">{{ commentError }}</div>
+            </label><br>
+            <label>
+                Présence:<br>
+                <select name="presence" id="presence" v-model="selected">
+                    <option disabled value="" selected>Selectionnez une option</option>
+                    <option>present</option>
+                    <option>missing</option>
+                </select>
+                <div v-if="presenceError" class="error-message">{{ presenceError }}</div>
+            </label><br>
+            <button type="submit" class="buttonLog">Enregistrer</button>
+            <p v-if="error">{{ error }}</p>
+        </form>
+        <label id="urlperso">{{ urlperso }}</label>
+            <div class="shared-participants">
+                <h1>Participants</h1>
+                <div class="participants">
+                    <div v-for="(participant, index) in participants" :key="participant.id" class="participant">
+                        <div class="part-top">
+                            <span class="part-name">{{ participant.participants.name }}</span>
+                            <span class="part-firstname">{{ participant.participants.firstname }}</span>
+                            <span class="part-tel">{{ participant.participants.state }}</span>
+                        </div>
+                        <div class="part-bot">
+                            <span class="part-state">{{ participant.participants.tel_number }}</span>
+                            &nbsp; <br>
+                            <span class="part-state">{{ participant.participants.comment }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </template>
@@ -202,4 +205,41 @@ export default {
     },
 }
 </script>
+
+<style>
+.shared-container {
+    display: flex;
+    justify-content: center;
+}
+.shared-container form {
+    justify-content: center;
+    text-align: center;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    padding: 40px;
+    height: 400px;
+    width: 250px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+
+}
+
+.shared-participants {
+    display: flex;
+    width:60%;
+    flex-direction: column;
+    margin: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.shared-participants h1 {
+    border: 1px solid black;
+    color: #f2f2f2;
+    padding: 15px;
+    font-size: 1.6em;
+    background-color: rgb(67, 67, 216);
+
+}
+</style>
+
 

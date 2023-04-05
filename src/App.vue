@@ -16,7 +16,7 @@
       <router-link to="/homePage">Réunionou</router-link>
     </div>
     <div class="item-nav">
-      <router-link to="/signin">Mon compte</router-link>
+      <router-link to="/homePage">Bienvenue</router-link>
       <router-link to="/logout" id="disconnect"><img src="shutdown.png" alt="disconnect img" title="Se déconnecter" id="disconnect-img"></router-link>
     </div>
   </nav>
@@ -34,29 +34,11 @@ export default {
   components: {},
   data() {
     return {
-      loggin:false
     }
   },
   methods: {
-    
   },
   computed: {
-    isLoggin() {
-      axios.get('http://localhost:19102/users/validate', {
-        headers: {
-          Authorization: `Bearer ${this.$store.state.token}`
-        }
-      }).then(
-        (response) => {
-            if (response.status === 200) {
-              console.log("loggin")
-              this.loggin = true;
-            } else {
-              console.log("not loggin")
-              this.loggin = false;
-            }
-        });
-    }
   },
   
 }
