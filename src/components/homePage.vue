@@ -161,6 +161,7 @@ export default {
     padding: 25px 25px 80px 25px;
     border: #242429 solid 2px;
     background-color: white;
+    margin-bottom: 25px;
 }
 
 .event-title {
