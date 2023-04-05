@@ -49,7 +49,7 @@ export default {
                 return
             }
 
-            axios.post("http://localhost:19102/users/signin", {
+            axios.post("http://localhost:19106/users/signin", {
 
             }, {
                 auth: {
@@ -58,7 +58,7 @@ export default {
                 }
             }).then(
                 (response) => {
-                    if (response.status === 201) {
+                    if (response.status === 200) {
                         this.$store.state.authenticated = true;
                         this.$store.state.id = response.data.id_user;
                         this.$store.state.email = response.data.email;

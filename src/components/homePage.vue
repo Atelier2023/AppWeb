@@ -39,7 +39,7 @@ export default {
     },
     methods: {
         createEvent() {
-            axios.get('http://localhost:19102/users/validate', {
+            axios.get('http://localhost:19106/users/validate', {
                 headers: {
                     Authorization: `Bearer ${this.$store.state.token}`
                 }
@@ -51,7 +51,7 @@ export default {
                 },
                 (error) => {
                     if (error.response.status === 401) {
-                        axios.get(`http://localhost:19102/users/getRefresh/${this.$store.state.id}`, {
+                        axios.get(`http://localhost:19106/users/getRefresh/${this.$store.state.id}`, {
                         }).then(
                             (response) => {
                                 const refresh_token = response.data[0].refresh_token;
@@ -93,7 +93,7 @@ export default {
                 });
         },
         goToOneEvent(id) {
-            axios.get('http://localhost:19102/users/validate', {
+            axios.get('http://localhost:19106/users/validate', {
                 headers: {
                     Authorization: `Bearer ${this.$store.state.token}`
                 }
@@ -105,11 +105,11 @@ export default {
                 },
                 (error) => {
                     if (error.response.status === 401) {
-                        axios.get(`http://localhost:19102/users/getRefresh/${this.$store.state.id}`, {
+                        axios.get(`http://localhost:19106/users/getRefresh/${this.$store.state.id}`, {
                         }).then(
                             (response) => {
                                 const refresh_token = response.data[0].refresh_token;
-                                axios.post('http://localhost:19102/users/refresh', {}, {
+                                axios.post('http://localhost:19106/users/refresh', {}, {
                                     headers: {
                                         Authorization: `Bearer ${refresh_token}`
                                     }
