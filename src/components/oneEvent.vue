@@ -7,11 +7,13 @@
 
     <div class="detail-event">
         <h1>{{ events.title }}</h1>
-        <span class="detail-date">Date de l'évenement : <b>{{ events.date_event }}</b></span>
-        &nbsp;
-        <br>
-        <span class="detail-address">Adresse : <b>{{ events.address }}</b></span>
-        <span class="detail-creater">{{ events.username }}</span>
+        <div class="detail-event-info">
+            <span class="detail-date">Date de l'évenement : <b>{{ events.date_event }}</b></span>
+            &nbsp;
+            <br>
+            <span class="detail-address">Adresse : <b>{{ events.address }}</b></span>
+            <span class="detail-creater">{{ events.username }}</span>
+        </div>
     </div>
     <div class="container-onevent">
         <div class="left-container">
@@ -263,12 +265,13 @@ export default {
         }, */
         setMarker() {
             console.log(this.events.address)
-            axios.get(`http://api.positionstack.com/v1/forward?access_key=${this.apiKey}&query=${this.events.address}`)
+            //axios.get(`http://api.positionstack.com/v1/forward?access_key=${this.apiKey}&query=${this.events.address}`)
+            axios.get(`https://nominatim.openstreetmap.org/search.php?q=${this.events.address}&format=jsonv2`)
                 .then((response) => {
                     console.log(this.events.address)
-                    console.log(response.data.data)
-                    this.lat = response.data.data[0].latitude
-                    this.long = response.data.data[0].longitude
+                    console.log((response.data[0].lat + " " + response.data[0].lon))
+                    this.lat = response.data[0].lat;
+                    this.long = response.data[0].lon;
                 })
                 .catch((error) => {
                     console.log(error)
@@ -320,6 +323,10 @@ th {
     padding: 15px;
     font-size: 1.6em;
     background-color: rgb(67, 67, 216);
+}
+
+.detail-event-info {
+    padding: 30px;
 }
 
 .container-onevent {

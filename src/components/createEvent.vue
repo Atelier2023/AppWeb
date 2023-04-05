@@ -76,13 +76,21 @@ export default {
     methods: {
         getAddress(map) { // Onclick sur la map, récupère l'adresse et l'affiche dans le popup et dans le champ adresse
             map.on('click', (e) => {
-                console.log(e.latlng)
-                axios.get(`http://api.positionstack.com/v1/reverse?access_key=${this.apiKey}&query=${e.latlng.lat},${e.latlng.lng}`)
+                axios.get(`https://nominatim.openstreetmap.org/reverse.php?lat=${e.latlng.lat}&lon=${e.latlng.lng}&zoom=18&format=jsonv2`)
                     .then((response) => {
-                        this.adress = response.data.data[0].label
-                        this.adressPopup = response.data.data[0].label
-                        this.lat = response.data.data[0].latitude
-                        this.long = response.data.data[0].longitude
+                        let numero
+                        if (response.data.address.house_number) { 
+                            numero = response.data.address.house_number
+                        }
+                        else {
+                            numero = ""
+                        }
+                        let adressReturn = numero + " " + response.data.address.road + ", " + response.data.address.municipality + ", " + response.data.address.country
+                        this.adress = adressReturn
+                        console.log(this.adress)
+                        this.adressPopup = adressReturn
+                        this.lat = e.latlng.lat
+                        this.long = e.latlng.lng
                         this.$refs.marker.leafletObject.openPopup()
                     })
                     .catch((error) => {
