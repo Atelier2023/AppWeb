@@ -73,12 +73,12 @@ export default {
             );
         },
         getEvents() {
-            axios.get(`http://localhost:19100/events/getEvent/${this.$store.state.id}}`)
+            axios.get(`http://localhost:19106/events/getEvent/${this.$store.state.id}}`)
                 .then(response => {
                     this.events = response.data;
 
                     this.events.forEach(event => {
-                        axios.get(`http://localhost:19102/users/getUser/${event.id_user}`)
+                        axios.get(`http://localhost:19106/users/getUser/${event.id_user}`)
                             .then(response => {
                                 event.username = response.data[0].firstname;
                             })

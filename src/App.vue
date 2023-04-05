@@ -17,7 +17,7 @@
     </div>
     <div class="item-nav">
       <router-link to="/homePage">Bienvenue</router-link>
-      <router-link to="/logout" id="disconnect"><img src="shutdown.png" alt="disconnect img" title="Se déconnecter" id="disconnect-img"></router-link>
+      <router-link to="/logout" id="disconnect"><img src="/shutdown.png" alt="disconnect img" title="Se déconnecter" id="disconnect-img"></router-link>
     </div>
   </nav>
 

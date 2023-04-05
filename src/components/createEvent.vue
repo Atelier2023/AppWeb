@@ -108,16 +108,15 @@ export default {
                 return
             }
 
-            axios.post("http://localhost:19100/events/create", {
+            axios.post("http://localhost:19106/events/create", {
                 id_user: this.$store.state.id,
                 title: this.title,
                 address: this.adress,
                 date_event: this.date,
             }).then(
                 (response) => {
-                    if (response.status === 201) {
+                    if (response.status === 200) {
                         this.$router.push('/homePage')
-
                     }
                     console.log(response);
                 },

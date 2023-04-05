@@ -112,7 +112,7 @@ export default {
 
 
         getEvents() {
-            axios.get(`http://localhost:19100/events/${this.$route.params.id_event}`)
+            axios.get(`http://localhost:19106/events/${this.$route.params.id_event}`)
                 .then(response => {
                     this.events = response.data;
                     this.address = response.data.address;
@@ -127,7 +127,7 @@ export default {
             return date.toLocaleDateString("fr");
         },
         getParticipants() {
-            axios.get(`http://localhost:19100/participants/getParticipants/${this.$route.params.id_event}`)
+            axios.get(`http://localhost:19106/participants/getParticipants/${this.$route.params.id_event}`)
                 .then(response => {
                     this.participants = response.data.participants;
                 })

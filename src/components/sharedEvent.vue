@@ -126,9 +126,9 @@ export default {
                 return
             }
 
-            axios.get("http://localhost:19100/events/shared/" + this.shared_url).then(
+            axios.get("http://localhost:19106/events/shared/" + this.shared_url).then(
                 (response) => {
-                    axios.post("http://localhost:19100/participants/create", {
+                    axios.post("http://localhost:19106/participants/create", {
                         name: this.nom,
                         firstname: this.prenom,
                         tel_number: this.telephone,
@@ -138,16 +138,16 @@ export default {
                         id_event: response.data.id_event,
                     }).then(
                         (response) => {
-                            if (response.status === 201) {
+                            if (response.status === 200) {
                                 this.getParticipants();
-                                axios.post("http://localhost:19100/participants/idparticipant", {
+                                axios.post("http://localhost:19106/participants/idparticipant", {
                                     email: this.email,
                                     id_event: this.$route.params.id_event
                                 }).then(
                                     (response) => {
                                         if (response.status === 200) {
-                                            console.log(response.data[0].id_participant)
-                                            // this.id_participant = response.data[0].id_participant
+                                            console.log(response.data)
+                                            this.id_participant = response.data[0].id_participant
                                             this.urlperso = `http://localhost:5173/shared/${this.$route.params.id}/${this.$route.params.id_event}/${response.data[0].id_participant}`
 
                                         }
@@ -202,7 +202,7 @@ export default {
             return ''
         },
         getEvents() {
-            axios.get(`http://localhost:19100/events/${this.$route.params.id_event}`)
+            axios.get(`http://localhost:19106/events/${this.$route.params.id_event}`)
                 .then(response => {
                     this.events = response.data;
                     this.address = response.data.address;
@@ -217,7 +217,7 @@ export default {
             return date.toLocaleDateString("fr");
         },
         getParticipants() {
-            axios.get(`http://localhost:19100/participants/getParticipants/${this.$route.params.id_event}`)
+            axios.get(`http://localhost:19106/participants/getParticipants/${this.$route.params.id_event}`)
                 .then(response => {
                     this.participants = response.data.participants;
                 })

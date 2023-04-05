@@ -152,7 +152,7 @@ export default {
             );
         },
         getEvents() {
-            axios.get(`http://localhost:19100/events/${this.$route.params.id}`)
+            axios.get(`http://localhost:19106/events/${this.$route.params.id}`)
                 .then(response => {
                     console.log(response.data)
                     this.events = response.data;
@@ -167,7 +167,7 @@ export default {
         },
 
         getComs() {
-            axios.get(`http://localhost:19100/commentaires/${this.$route.params.id}`)
+            axios.get(`http://localhost:19106/commentaires/${this.$route.params.id}`)
                 .then(response => {
                     this.coms = response.data.comments;
                     this.coms.forEach(com => {
@@ -195,14 +195,14 @@ export default {
                     if (response.status === 200) {
                         const current = new Date();
                         const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
-                        axios.post("http://localhost:19100/commentaires/create", {
+                        axios.post("http://localhost:19106/commentaires/create", {
                             commentaire: this.com,
                             id_user: this.$store.state.id,
                             id_event: this.$route.params.id,
                             date: date
                         }).then(
                             (response) => {
-                                if (response.status === 201) {
+                                if (response.status === 200) {
                                     this.getComs()
                                     this.com = ''
                                     this.$router.push(`/oneEvent/${this.$route.params.id}`)
@@ -231,14 +231,14 @@ export default {
                                         this.$store.state.token = response.data.accesstoken;
                                         const current = new Date();
                                         const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
-                                        axios.post("http://localhost:19100/commentaires/create", {
+                                        axios.post("http://localhost:19106/commentaires/create", {
                                             commentaire: this.com,
                                             id_user: this.$store.state.id,
                                             id_event: this.$route.params.id,
                                             date: date
                                         }).then(
                                             (response) => {
-                                                if (response.status === 201) {
+                                                if (response.status === 200) {
                                                     this.getComs()
                                                     this.com = ''
                                                     this.$router.push(`/oneEvent/${this.$route.params.id}`)
@@ -261,7 +261,7 @@ export default {
             );
         },
         getParticipants() {
-            axios.get(`http://localhost:19100/participants/getParticipants/${this.$route.params.id}`)
+            axios.get(`http://localhost:19106/participants/getParticipants/${this.$route.params.id}`)
                 .then(response => {
                     console.log(response)
                     this.participants = response.data.participants;
