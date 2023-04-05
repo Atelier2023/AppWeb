@@ -1,7 +1,7 @@
 <template>
     <nav class="nav-event">
         <router-link to="/homePage">Mes événements</router-link>
-        <button v-if="this.$store.state.authenticated" @click="createEvent" class="onPage createEventButton">Créer un
+        <button v-if="this.$store.state.authenticated" @click="createEvent" class="onPage createEventButton-onPage">Créer un
             évenement</button>
     </nav>
 
@@ -186,5 +186,16 @@ export default {
     height: 30px;
     border-radius: 5px;
     border: 1px solid #ccc;
+}
+.createEventButton-onPage {
+    color: #242429;
+    background-color: #D7D7D7;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: #D7D7D7 solid 2px;
+    font-size: 1em;
+    margin: 0;
 }
 </style>

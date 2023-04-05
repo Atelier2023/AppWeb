@@ -185,8 +185,12 @@ export default {
 
 .createEventButton {
     color: #242429;
+    background-color: #D7D7D7;
     font-family: Avenir, Helvetica, Arial, sans-serif;
-    border: none;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: #D7D7D7 solid 2px;
     font-size: 1em;
     margin: 0;
 }
