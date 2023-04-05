@@ -11,9 +11,10 @@
             <h2>Mes événements</h2>
             <div v-for="(event, index) in this.events" :key="event.id" class="event-home">
                 <div class="event-left">
-                <span class="event-title"><b>{{ event.title }}</b></span> - <i style="font-size: 0.9em;">{{ event.date_event.substring(0, 10) }} </i><span class="state-event"> {{ event.state }} </span><br>
-                <br>{{ event.address }} <br><br>
-                <u> Organisateur :</u> {{ event.username }}
+                    <span class="event-title"><b>{{ event.title }}</b></span> - <i style="font-size: 0.9em;">{{
+                        event.date_event.substring(0, 10) }} </i><span class="state-event"> {{ event.state }} </span><br>
+                    <br>{{ event.address }} <br><br>
+                    <u> Organisateur :</u> {{ event.username }}
                 </div>
                 <button class="buttonLog" @click="goToOneEvent(event.id_event)">Détails</button>
                 <br>
@@ -208,12 +209,11 @@ export default {
 .allEvents {
     margin: 50px auto;
     padding-right: 15px;
-    max-height: 750px;
-    overflow: auto;
     width: 45%
 }
 
 .mapLeaflet {
     width: 70%;
     margin-top: 25px;
-}</style>
+}
+</style>
