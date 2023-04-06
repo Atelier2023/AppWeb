@@ -45,8 +45,8 @@
                 Présence:<br>
                 <select name="presence" id="presence" v-model="selected">
                     <option disabled value="" selected>Selectionnez une option</option>
-                    <option>present</option>
-                    <option>missing</option>
+                    <option>vient</option>
+                    <option>ne_vient_pas</option>
                 </select>
                 <div v-if="presenceError" class="error-message">{{ presenceError }}</div>
             </label><br>
