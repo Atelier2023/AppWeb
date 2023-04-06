@@ -72,7 +72,7 @@ export default {
                 tel_number: this.phone
             }).then(
                 (response) => {
-                    if (response.status === 201) {
+                    if (response.status === 200) {
                         this.$router.push('/signin')
                     }
                     console.log(response);

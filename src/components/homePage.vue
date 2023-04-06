@@ -55,7 +55,7 @@ export default {
                         }).then(
                             (response) => {
                                 const refresh_token = response.data[0].refresh_token;
-                                axios.post('http://localhost:19102/users/refresh', {}, {
+                                axios.post('http://localhost:19106/users/refresh', {}, {
                                     headers: {
                                         Authorization: `Bearer ${refresh_token}`
                                     }
